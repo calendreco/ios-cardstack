@@ -8,6 +8,40 @@
 
 import UIKit
 
+public extension Int {
+    static func random(from: Int, to: Int) -> Int {
+        guard to > from else {
+            assertionFailure("Can not generate negative random numbers")
+            return 0
+        }
+        return Int(arc4random_uniform(UInt32(to - from)) + UInt32(from))
+    }
+}
+
+extension UIColor {
+    static func random() -> UIColor {
+        let colors: [UIColor] = [UIColor(red:0.36, green:0.37, blue:0.59, alpha:1.00),
+                                 UIColor(red:1.00, green:0.76, blue:0.27, alpha:1.00),
+                                 UIColor(red:1.00, green:0.42, blue:0.42, alpha:1.00),
+                                 UIColor(red:0.25, green:0.47, blue:0.55, alpha:1.00),
+                                 UIColor(red:0.35, green:0.53, blue:1.00, alpha:1.00),
+                                 UIColor(red:0.36, green:0.37, blue:0.59, alpha:1.00),
+                                 UIColor(red:1.00, green:0.76, blue:0.27, alpha:1.00),
+                                 UIColor(red:1.00, green:0.42, blue:0.42, alpha:1.00),
+                                 UIColor(red:0.25, green:0.47, blue:0.55, alpha:1.00),
+                                 UIColor(red:0.35, green:0.53, blue:1.00, alpha:1.00),
+                                 UIColor(red:0.60, green:0.61, blue:0.58, alpha:1.00),
+                                 UIColor(red:0.95, green:0.36, blue:0.11, alpha:1.00),
+                                 UIColor(red:0.86, green:0.16, blue:0.21, alpha:1.00),
+                                 UIColor(red:0.13, green:0.44, blue:0.33, alpha:1.00),
+                                 UIColor(red:0.53, green:0.76, blue:0.56, alpha:1.00),
+                                 UIColor(red:0.89, green:0.69, blue:0.22, alpha:1.00),
+                                 UIColor(red:0.26, green:0.24, blue:0.22, alpha:1.00)]
+        
+        return colors[Int.random(from: 0, to: colors.count)]
+    }
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -15,7 +49,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        window = UIWindow()
+        
+        window?.rootViewController = RootViewController(nibName: nil, bundle: nil)
+        window?.makeKeyAndVisible()
+        
         return true
     }
 

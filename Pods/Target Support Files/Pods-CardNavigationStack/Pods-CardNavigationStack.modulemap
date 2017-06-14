@@ -1,0 +1,6 @@
+framework module Pods_CardNavigationStack {
+  umbrella header "Pods-CardNavigationStack-umbrella.h"
+
+  export *
+  module * { export * }
+}
