@@ -8,19 +8,6 @@
 
 import UIKit
 
-/*
- Goals:
-     - Wrap a UIViewController in a 'card container'
-     - UIViewController without being wrapped is a fullscreen scrollView most likely
-     - Wrapping it puts it inside of a card and allows it to have 3 states. Scroll to expand/collapse
-     - Wrapped 'card containers' can be swipped left and write and are responsible for providing a snapshot of themselves whenever they udate their UI
- 
- 
-     1) pass in a scrollView
-     2) pass in a CardChildScrollDelegate
-     3) pass in a UIView that needs to be wrapped in a UIScrollView
- */
-
 // Allows child view controllers to pass their scroll delegates without setting UIScrollView.delegate (breaks tableView, etc)
 protocol CardChildScrollDelegate: class {
     //func shouldAllowScrollingToBegin() -> Bool
@@ -29,17 +16,58 @@ protocol CardChildScrollDelegate: class {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
 }
 
-protocol CardChild: class {
-    // Loading card allows different content types to provide custom loading cards
-    var loadingCard: UIView? { get }
+class MockCardChild: UIView, CardChild {
+    var scrollView: UIScrollView {
+        return _scrollView
+    }
     
-    // ContentView is the view wrapping the inner `UIScrollView`
-    var contentView: UIView { get }
+    let _scrollView = UIScrollView(frame: .zero)
+    let container: UIView
     
-    var updateSnapshot: (() -> Void)? { get set }
+    var updateSnapshot: (() -> Void)?
+    var scrollDelegate: CardChildScrollDelegate?
     
-    // Needs to be manually called within the `UIScrollViewDelegate`
-    weak var scrollDelegate: CardChildScrollDelegate? { get set }
+    
+    init(view: UIView) {
+        container = view
+        
+        super.init(frame: view.frame)
+        _scrollView.frame = view.bounds
+
+        _scrollView.addSubview(view)
+        _scrollView.delegate = self
+        _scrollView.alwaysBounceVertical = true
+        
+        addSubview(_scrollView)
+        
+        container.frame = _scrollView.bounds
+        
+        updateSnapshot?()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        _scrollView.frame = bounds
+        container.frame = _scrollView.bounds
+    }
+}
+
+extension MockCardChild: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        scrollDelegate?.scrollViewWillBeginDragging(scrollView)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollDelegate?.scrollViewDidScroll(scrollView)
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        scrollDelegate?.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
+    }
 }
 
 class CardViewController: UIViewController {
@@ -51,10 +79,15 @@ class CardViewController: UIViewController {
     }
 
     var state: State
-    // Do we ever want our previous state? Support a `transitionBack` similar to directions mode
-    
 
-    let container: UIView // This is the "card" that is positioned on the screen
+    let container: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        view.layer.cornerRadius = 10
+        view.clipsToBounds = true
+        return view
+    }()
+    
     fileprivate(set) var snapshot: UIView? // We store our snapshot and update it whenever our child tells us we need to
     
     // MARK: Scroll delegate helper flags
@@ -63,17 +96,17 @@ class CardViewController: UIViewController {
         var isTransitioning: Bool = false
     }
     
-    fileprivate let child: CardChild
+    let child: CardChild
     fileprivate var scrollFlags: ScrollFlags = ScrollFlags()
 
     // When passed a CardContainerChild, we need to wrap it in a view and position it
     init(child: CardChild, state: State) {
         self.state = state
-        self.container = child.contentView
         self.child = child
         super.init(nibName: nil, bundle: nil)
         
         view.addSubview(container)
+        container.addSubview(child.scrollView)
         
         child.scrollDelegate = self
         child.updateSnapshot = updateSnapshot
@@ -94,6 +127,7 @@ class CardViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         container.frame = self.frame(for: state)
+        child.scrollView.frame = container.bounds
     }
     
     func navigate(to state: State, animated: Bool, completion: (() -> Void)? = nil) {

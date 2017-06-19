@@ -9,15 +9,12 @@
 import UIKit
 
 class VenueView: UIView, CardChild {
-    var loadingCard: UIView? {
-        return nil
+    
+    var scrollView: UIScrollView {
+        return _scrollView
     }
     
-    var contentView: UIView {
-        return self
-    }
-    
-    let scrollView = UIScrollView(frame: .zero)
+    let _scrollView = UIScrollView(frame: .zero)
     let container = UIView(frame: .zero)
     
     var updateSnapshot: (() -> Void)?
@@ -25,14 +22,13 @@ class VenueView: UIView, CardChild {
     
     init(background: UIColor) {
         super.init(frame: .zero)
-        container.backgroundColor = background
-        container.layer.cornerRadius = 10
+        scrollView.backgroundColor = background
         
-        scrollView.addSubview(container)
-        scrollView.delegate = self
-        scrollView.alwaysBounceVertical = true
+        _scrollView.addSubview(container)
+        _scrollView.delegate = self
+        _scrollView.alwaysBounceVertical = true
         
-        addSubview(scrollView)
+        addSubview(_scrollView)
         
         updateSnapshot?()
     }
@@ -43,8 +39,8 @@ class VenueView: UIView, CardChild {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        scrollView.frame = bounds
-        container.frame = scrollView.bounds
+        _scrollView.frame = bounds
+        container.frame = _scrollView.bounds
     }
 }
 

@@ -15,7 +15,7 @@ class RootViewController: UIViewController {
         let view = UILabel()
         view.backgroundColor = UIColor.black.withAlphaComponent(0.95)
         view.frame.size.height = 44
-        view.text = "Next 3 hours"
+        view.text = ""
         view.textColor = .white
         view.textAlignment = .center
         view.isUserInteractionEnabled = true
@@ -46,9 +46,12 @@ class RootViewController: UIViewController {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         
-        let card = VenueView(background: .red)
-        let cardContainer = CardViewController(child: card, state: .stack)
-        let group = CardGroup(cards: [cardContainer], title: nil)
+        let loadingView = LoadingCard(frame: .zero)
+        let loadingViewContainer = MockCardChild(view: loadingView)
+        let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
+        
+        let store = CardGroupStore()
+        let group = CardGroup(loadingCard: loadingCard, store: store, title: nil)
         
         stack = CardStackViewController(group: group)
         
@@ -57,22 +60,11 @@ class RootViewController: UIViewController {
         addChildViewController(stack)
         view.addSubview(stack.view)
         
+        loadingCard.view.frame = view.bounds
+        
         bottomBar.addSubview(backButton)
         bottomBar.addSubview(plusButton)
         view.addSubview(bottomBar)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            self.handleAddButton()
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-            self.handleBackButton()
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
-            self.handleAddButton()
-        }
-
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -97,19 +89,14 @@ class RootViewController: UIViewController {
     }
     
     @objc private func handleAddButton() {
-        var previousColor = UIColor.random()
-        let cards = (0..<Int.random(from: 1, to: 5)).map { _ -> CardViewController in
-            var color = UIColor.random()
-            while color == previousColor {
-                color = UIColor.random()
-            }
-            previousColor = color
-            let card = VenueView(background: color)
-            return CardViewController(child: card, state: .stack)
-        }
         
-        let group = CardGroup(cards: cards, title: nil)
-        print("Pushing card group of \(cards.count)")
-        stack.push(cardGroup: group, animated: true, completion: nil)
+        let loadingView = LoadingCard(frame: self.view.bounds)
+        let loadingViewContainer = MockCardChild(view: loadingView)
+        let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
+        
+        let store = CardGroupStore()
+        let group = CardGroup(loadingCard: loadingCard, store: store, title: nil)
+
+        stack.push(group: group, animated: true, completion: nil)
     }
 }

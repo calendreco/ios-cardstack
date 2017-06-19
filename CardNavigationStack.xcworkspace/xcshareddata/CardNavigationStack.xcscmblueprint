@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "7CCD3B95BE427288A1A955757198E9104F802B6E",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "7CCD3B95BE427288A1A955757198E9104F802B6E" : 9223372036854775807,
+    "54DD901E7CCED806CFE154D89D04A34D2C27355D" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E8979B81-F6DC-4853-8FD1-7679B97A03F9",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "7CCD3B95BE427288A1A955757198E9104F802B6E" : "CardNavigationStack\/",
+    "54DD901E7CCED806CFE154D89D04A34D2C27355D" : "live-ios-2\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "CardNavigationStack",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "CardNavigationStack.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/calendreco\/live-ios-2",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "54DD901E7CCED806CFE154D89D04A34D2C27355D"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/calendreco\/ios-cardstack.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "7CCD3B95BE427288A1A955757198E9104F802B6E"
+    }
+  ]
+}

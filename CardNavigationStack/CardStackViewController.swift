@@ -1,50 +1,14 @@
 //
-//  CardStackNavigationController.swift
+//  CardStackViewController.swift
 //  CardNavigationStack
 //
-//  Created by Stephen Silber on 5/19/17.
+//  Created by Stephen Silber on 6/16/17.
 //  Copyright © 2017 calendre. All rights reserved.
 //
 
 import Foundation
 import UIKit
 import AWPercentDrivenInteractiveTransition
-
-// Transitions between CardContainerViewControllers
-
-struct LoadingCard { }
-
-// Responsible for groups of cards
-class CardGroup {
-    
-    fileprivate(set) var currentIndex: Int = 0
-    
-    var cards: [CardViewController]
-    var loadingCard: LoadingCard?
-    var title: String?
-    
-    var isLastCard: Bool {
-        return currentIndex == cards.count - 1
-    }
-    
-    var topCard: CardViewController? {
-        return cards.last
-    }
-    
-    var currentCard: CardViewController {
-        let card = cards[currentIndex]
-        if isLastCard {
-            card.container.layer.cornerRadius = 0
-        }
-        return card
-    }
-    
-    init(cards: [CardViewController], loadingCard: LoadingCard? = nil, title: String?) {
-        self.cards = cards
-        self.loadingCard = loadingCard
-        self.title = title
-    }
-}
 
 class CardStackViewController: UIViewController {
     
@@ -53,28 +17,56 @@ class CardStackViewController: UIViewController {
         case right
     }
     
+    private lazy var queue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        queue.underlyingQueue = DispatchQueue.main
+        return queue
+    }()
+    
+    private var groups: [CardGroup] = []
+    
+    private lazy var panGesture: UIPanGestureRecognizer = {
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gesture:)))
+        gesture.delegate = self
+        return gesture
+    }()
+    
     var topmostCard: CardViewController? {
         return groups.last?.currentCard
     }
     
-    fileprivate(set) var groups: [CardGroup] = []
-    private lazy var panGesture: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(gesture:)))
+    private var currentCard: CardViewController
+    private var isTransitioning: Bool = false
     
-    fileprivate var transition: AWPercentDrivenInteractiveTransition?
+    private var snapshot: UIView?
     
     init(group: CardGroup) {
+        currentCard = group.loadingCard
         super.init(nibName: nil, bundle: nil)
-        
-        // Add our cardGroup to the screen
-        guard let card = group.topCard else {
-            fatalError("CardGroup must have at least one card")
-        }
+        currentCard = fetchNextCard(for: group, isSameGroup: false)
         
         groups.append(group)
-        addChildViewController(card)
-        view.addSubview(card.view)
-        card.didMove(toParentViewController: self)
-        
+        addChildViewController(currentCard)
+        view.addSubview(currentCard.view)
+        currentCard.didMove(toParentViewController: self)
+    }
+    
+    private func fetchNextCard(for group: CardGroup, isSameGroup: Bool) -> CardViewController {
+        if group.store.isLoading {
+            panGesture.isEnabled = false
+            group.store.didFinishLoading = { [weak self] in
+                self?.panGesture.isEnabled = true
+                self?.hideLoadingCard(for: group, animated: true, completion: nil)
+                // TODO: Figure out how to add this operation tothe queue without the `to` ViewController
+            }
+            
+            
+            return group.loadingCard
+        } else {
+            let card = isSameGroup ? group.cards[group.currentIndex + 1] : group.currentCard
+            return card
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -84,199 +76,179 @@ class CardStackViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-
-        panGesture.delegate = self
         view.addGestureRecognizer(panGesture)
     }
     
-    // Pushing a card onto the stack enforces that the existing 'top' card navigates to the .stack state
-    func push(cardGroup: CardGroup, animated: Bool, completion: ((Bool) -> Void)?) {
-        guard let currentGroup = groups.last, !isTransitioning else {
-            return
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        currentCard.view.frame = view.bounds
+    }
+    
+    func push(group: CardGroup, animated: Bool, completion: ((Bool) -> Void)?) {
+        
+        let animator = PushAnimator()
+        let from = currentCard
+        let to = fetchNextCard(for: group, isSameGroup: false)
+        
+        from.navigate(to: .stack, animated: true)
+        
+        let action: () -> Void = { [weak self] in
+            self?.groups.append(group) // TODO: Pull this out since it shouldn't affect anything
         }
         
-        isTransitioning = true
-        let from = currentGroup.currentCard
-        let to = cardGroup.currentCard
-        
-        groups.append(cardGroup)
-        
-        addChildViewController(to)
-        
-        let context = TransitionContext(from: from, to: to)
-        context.isAnimated = animated
-        context.isInteractive = false
-        context.completion = { [weak self] didComplete in
-            guard let `self` = self else { return }
-            
+        let animation = TransitionOperation.Animation(animator: animator, interactive: false, animated: animated)
+        let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: action, completion: { [weak self] didComplete in
             if didComplete {
-                
-                context.from.view.removeFromSuperview()
-                context.from.removeFromParentViewController()
-                context.from.didMove(toParentViewController: nil)
-                context.to.didMove(toParentViewController: self)
-//                self.bottomBar.text = String(describing: self.groups.count)
-                
-            } else {
-                
-                context.to.view.removeFromSuperview()
-                context.to.removeFromParentViewController()
-                
+                self?.currentCard = to
             }
             
             completion?(didComplete)
-            self.isTransitioning = false
-        }
+        })
         
-        let animator = PushAnimator()
-        animator.animateTransition(using: context)
+        queue.addOperation(operation)
     }
     
     func pop(animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
         guard let currentGroup = groups.last else { return }
+        
         if currentGroup.isLastCard == true {
             popGroup(animated: animated, interactive: interactive, completion: completion)
         } else {
-            let to = currentGroup.cards[currentGroup.currentIndex + 1]
-            let from = currentGroup.currentCard
-            
-            pop(from: from, to: to, animated: animated, interactive: interactive) { didComplete in
-                if didComplete {
-                    currentGroup.currentIndex += 1
-                }
-                completion?(didComplete)
-            }
+            popCard(for: currentGroup, animated: animated, interactive: interactive, completion: completion)
         }
     }
     
     func popGroup(animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
-        guard groups.count > 1, let currentGroup = groups.last else {
-            fatalError("Cannot pop group")
+        guard groups.count > 1 else {
+            fatalError("Cannot pop last group")
         }
         
-        guard !isTransitioning else { return }
+        let nextGroup = groups[groups.count - 2]
+        let to = fetchNextCard(for: nextGroup, isSameGroup: false)
+        let from = currentCard
+        let animator: UIViewControllerAnimatedTransitioning = interactive ? Animator() : MultiPopAnimator()
+        let animation = TransitionOperation.Animation(animator: animator, interactive: interactive, animated: animated)
         
-        let to = groups[groups.count - 2].currentCard
-        let from = currentGroup.currentCard
-        
-        pop(from: from, to: to, animated: animated, interactive: interactive) { [weak self] didComplete in
-            guard let `self` = self else { return }
-            self.groups.removeLast()
-            completion?(didComplete)
-        }
-    }
-    
-    var isTransitioning: Bool = false
-    private func pop(from: CardViewController, to: CardViewController, animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
-        isTransitioning = true
-        addChildViewController(to)
-        
-        let context = TransitionContext(from: from, to: to)
-        context.isInteractive = interactive
-        context.completion = { [weak self] didComplete in
-            guard let `self` = self else { return }
-            
+        let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil) { [weak self] didComplete in
             if didComplete {
-                
-                from.view.removeFromSuperview()
-                from.removeFromParentViewController()
-                from.didMove(toParentViewController: nil)
-                to.didMove(toParentViewController: self)
-                
-            } else {
-                
-                to.view.removeFromSuperview()
-                to.removeFromParentViewController()
-                
+                self?.groups.removeLast()
+                self?.currentCard = to
             }
             
             completion?(didComplete)
-            self.transition = nil
-            self.isTransitioning = false
         }
         
-        
-        
-        if interactive {
-            let animator = Animator()
-            transition = AWPercentDrivenInteractiveTransition(animator: animator)
-            transition?.startInteractiveTransition(context)
-        } else {
-            let animator = MultiPopAnimator()
-            animator.animateTransition(using: context)
-        }
-        
+        queue.addOperation(operation)
     }
     
-    var snapshot: UIView?
+    func popCard(for group: CardGroup, animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
+        let to = fetchNextCard(for: group, isSameGroup: true)
+        let from = currentCard
+        let animator: UIViewControllerAnimatedTransitioning = Animator()
+        let animation = TransitionOperation.Animation(animator: animator, interactive: interactive, animated: animated)
+        
+        let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete in
+            if didComplete {
+                self?.currentCard = to
+            }
+            
+            completion?(didComplete)
+        })
+        
+        queue.addOperation(operation)
+    }
+    
+    func hideLoadingCard(for group: CardGroup, animated: Bool, completion: ((Bool) -> Void)?) {
+        let from = group.loadingCard
+        let to = group.currentCard
+        
+        let animator = LoadingCardAnimator()
+        let animation = TransitionOperation.Animation(animator: animator, interactive: false, animated: animated)
+        let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete in
+            if didComplete {
+                self?.currentCard = to
+            }
+            
+            completion?(didComplete)
+        })
+        
+        queue.addOperation(operation)
+    }
+    
     @objc private func handlePan(gesture: UIPanGestureRecognizer) {
+        
         let translation = panGesture.translation(in: nil)
         let angle: CGFloat = translation.x > 0 ? .pi / 10 : -.pi / 10
         let percent = max(0, min(1, fabs(translation.x / (view.bounds.width / 2))))
         
         switch gesture.state {
         case .began:
-            topmostCard?.updateSnapshot()
             
-            guard gesture.isHorizontal(), let viewController = topmostCard, let snapshot = viewController.snapshot, !isTransitioning else {
+            // Check that we have a valid screenshot, that we aren't already transitioning, and that it's a horizontal pan
+            guard gesture.isHorizontal(), let viewController = topmostCard, let snapshot = viewController.snapshot, !isTransitioning, queue.operations.count == 0 else {
                 gesture.isEnabled = false
                 gesture.isEnabled = true
                 return
             }
             
+            // Notify our topmost group that we're about to start swiping
+            groups.last?.willBeginSwiping()
+            
             // Add our snapshot to the viewport, hide our viewController
             view.addSubview(snapshot)
-            snapshot.layer.zPosition = 50
-//            snapshot.layer.anchorPoint = panGesture.location(in: snapshot)
             
+            // Position our snapshot to match the card's position
             let center = CGPoint(x: viewController.container.center.x, y: viewController.container.frame.minY + (snapshot.frame.height / 2))
             snapshot.center = center
+            snapshot.layer.zPosition = 50
             
             self.snapshot = snapshot
             
+            // Hide our current viewController since we're using the snapshot instead
             viewController.view.isHidden = true
             
+            // Begin a pop transition that's animated and interactive
             pop(animated: true, interactive: true, completion: nil)
             
         case .changed:
-            transition?.update(percent)
+            // Update our UIViewController transition's percentage
+            (queue.operations.first as? TransitionOperation)?.transition?.update(percent)
+            
+            // Apply a transform for rotation/translation of the dragging card
             snapshot?.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
                 .concatenating(CGAffineTransform.init(rotationAngle: angle * percent))
             
-        case .cancelled, .ended:
+        case .ended:
+            // TODO: Implement better handling with velocity/percentage complete
+            guard let snapshot = self.snapshot else {
+                return
+            }
             
+            // Check if we should finish throwing the card or snap it back to the center
             if percent > 0.25 {
-                if let snapshot = snapshot {
-                    let direction: SwipeDirection = translation.x > 0 ? .right : .left
-                    throwSnapshot(snapshot, inDirection: direction, withTranslation: translation)
-                }
-                transition?.finish()
-                
+                let direction: SwipeDirection = translation.x > 0 ? .right : .left
+                groups.last?.didSwipe(card: currentCard, inDirection: direction)
+                throwSnapshot(snapshot, inDirection: direction, withTranslation: translation)
+                (queue.operations.first as? TransitionOperation)?.transition?.finish()
             } else {
-                if let snapshot = snapshot {
-                    resetSnapshot(snapshot)
-                }
-                transition?.cancel()
-                
+                resetSnapshot(snapshot)
+                (queue.operations.first as? TransitionOperation)?.transition?.cancel()
             }
             
         default: break
         }
     }
     
-    private func finalPoint(for translation: CGPoint, inDirection direction: SwipeDirection) -> CGPoint {
-        return CGPoint(x: translation.x * 3, y: translation.y * 3)
-    }
-    
     private func throwSnapshot(_ view: UIView, inDirection direction: SwipeDirection, withTranslation translation: CGPoint) {
         let finalX: CGFloat = direction == .left ? -view.bounds.width : view.bounds.width
-//        let angle: CGFloat = direction == .left ? -(.pi / 5) : .pi / 5
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.8, options: .allowUserInteraction, animations: {
             view.center.x += finalX
         }, completion: { finished in
             view.removeFromSuperview()
-            print("Removing \(view) from superview: \(view.superview)")
+            view.transform = .identity
+            view.isHidden = true
+            self.snapshot = nil
         })
     }
     
@@ -286,6 +258,8 @@ class CardStackViewController: UIViewController {
             view.transform = .identity
         }, completion: { finished in
             view.removeFromSuperview()
+            view.isHidden = true
+            self.snapshot = nil
             self.topmostCard?.view.isHidden = false
         })
     }
@@ -297,6 +271,3 @@ extension CardStackViewController: UIGestureRecognizerDelegate {
         return true
     }
 }
-
-
-

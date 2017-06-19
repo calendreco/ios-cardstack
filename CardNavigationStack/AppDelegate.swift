@@ -30,7 +30,6 @@ extension UIColor {
                                  UIColor(red:1.00, green:0.42, blue:0.42, alpha:1.00),
                                  UIColor(red:0.25, green:0.47, blue:0.55, alpha:1.00),
                                  UIColor(red:0.35, green:0.53, blue:1.00, alpha:1.00),
-                                 UIColor(red:0.60, green:0.61, blue:0.58, alpha:1.00),
                                  UIColor(red:0.95, green:0.36, blue:0.11, alpha:1.00),
                                  UIColor(red:0.86, green:0.16, blue:0.21, alpha:1.00),
                                  UIColor(red:0.13, green:0.44, blue:0.33, alpha:1.00),
