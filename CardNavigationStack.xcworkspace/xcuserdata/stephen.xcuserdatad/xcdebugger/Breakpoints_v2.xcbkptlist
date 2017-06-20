@@ -52,7 +52,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardGroup.swift"
-            timestampString = "519688305.471779"
+            timestampString = "519689874.893283"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "15"
@@ -96,32 +96,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            condition = "container.bounds.width &gt; 375"
-            continueAfterRunningActions = "No"
-            filePath = "CardNavigationStack/CardViewController.swift"
-            timestampString = "519688305.4719"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
-            landmarkName = "viewDidLayoutSubviews()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/RootViewController.swift"
-            timestampString = "519688305.471959"
+            timestampString = "519689874.893414"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
             landmarkName = "handleAddButton()"
             landmarkType = "7">
          </BreakpointContent>
@@ -133,11 +116,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519688305.472023"
+            timestampString = "519689874.893537"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "handlePan(gesture:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -149,11 +132,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519688305.472462"
+            timestampString = "519689874.893645"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "166"
-            endingLineNumber = "166"
+            startingLineNumber = "165"
+            endingLineNumber = "165"
             landmarkName = "popCard(for:animated:interactive:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -165,11 +148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardGroup.swift"
-            timestampString = "519688305.472798"
+            timestampString = "519689874.893728"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "38"
-            endingLineNumber = "38"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
             landmarkName = "CardGroup"
             landmarkType = "3">
             <Locations>
@@ -213,7 +196,7 @@
             ignoreCount = "1"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519688305.472854"
+            timestampString = "519689874.893799"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "64"

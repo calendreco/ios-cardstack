@@ -9,8 +9,6 @@
 import Foundation
 import UIKit
 
-// TODO: Hack
-var cardIndex: Int = 0
 
 class RootViewController: UIViewController {
     
@@ -70,6 +68,7 @@ class RootViewController: UIViewController {
         let store = CardGroupStore()
         store.simulatedDelay = 1
         let group = CardGroup(loadingCard: loadingCard, store: store, title: nil)
+        group.store.loadCounter = 100 // So we never reach the end of the stack
         
         stack = CardStackViewController(group: group)
         
@@ -109,7 +108,7 @@ class RootViewController: UIViewController {
     }
     
     @objc private func handleUndoButton() {
-//        stack.popGroup(animated: true, interactive: false, completion: nil)
+        stack.undoPopCard(animated: true, completion: nil)
     }
     
     @objc private func handleCloseButton() {

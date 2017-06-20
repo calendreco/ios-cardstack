@@ -126,7 +126,8 @@ class CardStackViewController: UIViewController {
     
     func popGroup(animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
         guard groups.count > 1 else {
-            fatalError("Cannot pop last group")
+            return
+//            fatalError("Cannot pop last group")
         }
         
         let nextGroup = groups[groups.count - 2]
@@ -151,7 +152,7 @@ class CardStackViewController: UIViewController {
         let to = fetchNextCard(for: group, isSameGroup: true)
         let from = currentCard
         
-        let animator: UIViewControllerAnimatedTransitioning = Animator()
+        let animator: UIViewControllerAnimatedTransitioning = InteractivePopAnimator()
         let animation = TransitionOperation.Animation(animator: animator, interactive: interactive, animated: animated)
         
         let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete in
@@ -165,6 +166,28 @@ class CardStackViewController: UIViewController {
         queue.addOperation(operation)
         checkForLoadingState(for: group)
 
+    }
+    
+    func undoPopCard(animated: Bool, completion: ((Bool) -> Void)?) {
+        guard let to = groups.last?.previousCard else {
+            // TODO: Handle this
+            return
+        }
+        to.view.isHidden = false
+        to.updateSnapshot()
+        
+        let from = currentCard
+        let animator = UndoPopAnimator()
+        let animation = TransitionOperation.Animation(animator: animator, interactive: false, animated: animated)
+        let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete in
+            if didComplete {
+                self?.currentCard = to
+            }
+            completion?(didComplete)
+            
+        })
+        
+        queue.addOperation(operation)
     }
     
     func hideLoadingCard(for group: CardGroup, animated: Bool, completion: ((Bool) -> Void)?) {

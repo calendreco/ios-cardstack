@@ -32,16 +32,13 @@ class MockCardChild: UIView, CardChild {
         container = view
         
         super.init(frame: view.frame)
-//        _scrollView.frame = view.bounds
         
         _scrollView.addSubview(view)
         _scrollView.delegate = self
         _scrollView.alwaysBounceVertical = true
         
         addSubview(_scrollView)
-        
-//        container.frame = _scrollView.bounds
-        
+
         updateSnapshot?()
     }
     
@@ -109,18 +106,13 @@ class CardViewController: UIViewController {
         view.addSubview(container)
         container.addSubview(child.scrollView)
         
-//        let label = UILabel()
-//        label.font = UIFont.systemFont(ofSize: 48, weight: UIFontWeightBold)
-//        label.textAlignment = .center
-//        label.text = "CARD: \(cardIndex)"
-        
-//        container.addSubview(label)
-//        label.frame = CGRect(x: 0, y: 50, width: 275, height: 50)
+        container.layer.shadowOpacity = 0.25
+        container.layer.shadowColor = UIColor.black.cgColor
+        container.layer.shadowRadius = 5
+        container.clipsToBounds = false
         
         child.scrollDelegate = self
         child.updateSnapshot = updateSnapshot
-        
-        cardIndex += 1
     }
     
     // TODO: Allow initializing without a CardContainerChild

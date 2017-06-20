@@ -36,9 +36,9 @@ class LoadingCard: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        highlightReel.frame = CGRect(x: 10, y: 10, width: bounds.width - 20, height: 260)
-        topText.frame = CGRect(x: 10, y: highlightReel.frame.maxY + 10, width: bounds.width - 20, height: 20)
-        bottomText.frame = CGRect(x: 10, y: topText.frame.maxY + 10, width: bounds.width - 20, height: 20)
+        highlightReel.frame = CGRect(x: 10, y: 10, width: bounds.width - 40, height: 260)
+        topText.frame = CGRect(x: 10, y: highlightReel.frame.maxY + 10, width: bounds.width - 40, height: 20)
+        bottomText.frame = CGRect(x: 10, y: topText.frame.maxY + 10, width: bounds.width - 40, height: 20)
         
         addShimmerEffectToView(highlightReel)
         addShimmerEffectToView(topText)

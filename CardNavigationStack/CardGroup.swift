@@ -19,6 +19,11 @@ class CardGroup {
         return cards[currentIndex + 1]
     }
     
+    var previousCard: CardViewController? {
+        guard currentIndex > 0 else { return nil }
+        return cards[currentIndex - 1]
+    }
+    
     var isLastCard: Bool {
         // We are on the last card, we aren't loading any more and don't need to load any more
         return currentIndex == cards.count - 1 && store.hasLoadedAllCards && !store.isLoading
@@ -52,10 +57,8 @@ class CardGroup {
     }
     
     func didSwipe(card: CardViewController, inDirection direction: PanDirection) {
-        print("Did swipe card. Incrementing current index \(currentIndex) by +1 out of \(cards.count - 1)")
         currentIndex += 1
         if cards.count - currentIndex < 3 && !store.isLoading && !store.hasLoadedAllCards {
-            print("After swiping, we noticed we need to fetch the next page of cards")
             fetchNext()
         }
     }

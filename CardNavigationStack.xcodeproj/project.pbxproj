@@ -12,9 +12,10 @@
 		DC0C85E31ECF7DF500289F3D /* CardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85E21ECF7DF500289F3D /* CardViewController.swift */; };
 		DC0C85E81ECF7DF500289F3D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC0C85E71ECF7DF500289F3D /* Assets.xcassets */; };
 		DC0C85EB1ECF7DF500289F3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC0C85E91ECF7DF500289F3D /* LaunchScreen.storyboard */; };
-		DC0C85F31ECF7E4800289F3D /* CardStackNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85F21ECF7E4800289F3D /* CardStackNavigationController.swift */; };
 		DC0C85F51ECF975E00289F3D /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85F41ECF975E00289F3D /* UIView+Snapshot.swift */; };
 		DC0C85F91ECF987300289F3D /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85F81ECF987300289F3D /* VenueViewController.swift */; };
+		DC1A55A41EF9D14300C2673F /* TransitionContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1A55A31EF9D14300C2673F /* TransitionContext.swift */; };
+		DC1A55A61EF9D15300C2673F /* PercentDrivenTransition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC1A55A51EF9D15300C2673F /* PercentDrivenTransition.swift */; };
 		DC24C3C91EF97BA00047604F /* LoadingCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC24C3C81EF97B680047604F /* LoadingCard.swift */; };
 		DC41920B1EF2D432005FD50A /* CardChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC41920A1EF2D432005FD50A /* CardChild.swift */; };
 		DC41920D1EF2DEE9005FD50A /* CardGroupStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC41920C1EF2DEE9005FD50A /* CardGroupStore.swift */; };
@@ -36,9 +37,10 @@
 		DC0C85E71ECF7DF500289F3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DC0C85EA1ECF7DF500289F3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DC0C85EC1ECF7DF500289F3D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DC0C85F21ECF7E4800289F3D /* CardStackNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackNavigationController.swift; sourceTree = "<group>"; };
 		DC0C85F41ECF975E00289F3D /* UIView+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Snapshot.swift"; sourceTree = "<group>"; };
 		DC0C85F81ECF987300289F3D /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
+		DC1A55A31EF9D14300C2673F /* TransitionContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionContext.swift; sourceTree = "<group>"; };
+		DC1A55A51EF9D15300C2673F /* PercentDrivenTransition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PercentDrivenTransition.swift; sourceTree = "<group>"; };
 		DC24C3C81EF97B680047604F /* LoadingCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCard.swift; sourceTree = "<group>"; };
 		DC41920A1EF2D432005FD50A /* CardChild.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardChild.swift; sourceTree = "<group>"; };
 		DC41920C1EF2DEE9005FD50A /* CardGroupStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGroupStore.swift; sourceTree = "<group>"; };
@@ -110,8 +112,9 @@
 				DC70BCE11EF457A5007740A5 /* CardStackViewController.swift */,
 				DC93791A1EF1CBF700A42E83 /* RootViewController.swift */,
 				DCD333C81EEF19190059EE99 /* Transition.swift */,
+				DC1A55A51EF9D15300C2673F /* PercentDrivenTransition.swift */,
+				DC1A55A31EF9D14300C2673F /* TransitionContext.swift */,
 				DC70BCE31EF826C9007740A5 /* TransitionOperation.swift */,
-				DC0C85F21ECF7E4800289F3D /* CardStackNavigationController.swift */,
 				DC24C3C81EF97B680047604F /* LoadingCard.swift */,
 				DC0C85E71ECF7DF500289F3D /* Assets.xcassets */,
 				DC0C85E91ECF7DF500289F3D /* LaunchScreen.storyboard */,
@@ -256,13 +259,14 @@
 				DC70BCE21EF457A5007740A5 /* CardStackViewController.swift in Sources */,
 				DC70BCE41EF826C9007740A5 /* TransitionOperation.swift in Sources */,
 				DCD333C71EEEEE010059EE99 /* UIPanGestureRecognizer+Direction.swift in Sources */,
+				DC1A55A41EF9D14300C2673F /* TransitionContext.swift in Sources */,
 				DC0C85F91ECF987300289F3D /* VenueViewController.swift in Sources */,
 				DC41920D1EF2DEE9005FD50A /* CardGroupStore.swift in Sources */,
 				DC93791B1EF1CBF700A42E83 /* RootViewController.swift in Sources */,
 				DC0C85F51ECF975E00289F3D /* UIView+Snapshot.swift in Sources */,
-				DC0C85F31ECF7E4800289F3D /* CardStackNavigationController.swift in Sources */,
 				DC535F821EF3176F00355AE8 /* CardGroup.swift in Sources */,
 				DC0C85E31ECF7DF500289F3D /* CardViewController.swift in Sources */,
+				DC1A55A61EF9D15300C2673F /* PercentDrivenTransition.swift in Sources */,
 				DCD333C91EEF19190059EE99 /* Transition.swift in Sources */,
 				DC41920B1EF2D432005FD50A /* CardChild.swift in Sources */,
 				DC0C85E11ECF7DF500289F3D /* AppDelegate.swift in Sources */,
