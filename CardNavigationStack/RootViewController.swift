@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+// TODO: Hack
+var cardIndex: Int = 0
+
 class RootViewController: UIViewController {
     
     private var bottomBar: UILabel = {
@@ -22,20 +25,34 @@ class RootViewController: UIViewController {
         return view
     }()
     
-    private lazy var backButton: UIButton = {
+    private lazy var undoButton: UIButton = {
         let button = UIButton()
-        button.setTitle("< Back", for: .normal)
+        button.setTitle("UNDO", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightBold)
         
-        button.addTarget(self, action: #selector(handleBackButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleUndoButton), for: .touchUpInside)
+        
+        return button
+    }()
+    
+    
+    private lazy var closeButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("CLOSE", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightBold)
+        
+        button.addTarget(self, action: #selector(handleCloseButton), for: .touchUpInside)
         
         return button
     }()
     
     private lazy var plusButton: UIButton = {
         let button = UIButton()
-        button.setTitle("+ Add", for: .normal)
+        button.setTitle("PUSH", for: .normal)
         button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: UIFontWeightBold)
         
         button.addTarget(self, action: #selector(handleAddButton), for: .touchUpInside)
         
@@ -46,11 +63,12 @@ class RootViewController: UIViewController {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         
-        let loadingView = LoadingCard(frame: .zero)
+        let loadingView = LoadingCard(frame: CGRect(x: 0, y: 0, width: 375, height: 670))
         let loadingViewContainer = MockCardChild(view: loadingView)
         let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
         
         let store = CardGroupStore()
+        store.simulatedDelay = 1
         let group = CardGroup(loadingCard: loadingCard, store: store, title: nil)
         
         stack = CardStackViewController(group: group)
@@ -62,7 +80,8 @@ class RootViewController: UIViewController {
         
         loadingCard.view.frame = view.bounds
         
-        bottomBar.addSubview(backButton)
+        bottomBar.addSubview(undoButton)
+        bottomBar.addSubview(closeButton)
         bottomBar.addSubview(plusButton)
         view.addSubview(bottomBar)
     }
@@ -76,25 +95,35 @@ class RootViewController: UIViewController {
         stack.view.frame = view.bounds
         
         bottomBar.frame = CGRect(x: 0, y: view.bounds.height - 44, width: view.bounds.width, height: 44)
-        backButton.frame = bottomBar.bounds
-        backButton.frame.size.width = 100
+        undoButton.frame = bottomBar.bounds
+        undoButton.frame.size.width = 100
+        
+        closeButton.frame = bottomBar.bounds
+        closeButton.frame.size.width = 100
+        closeButton.frame.origin.x = bottomBar.center.x - 50
+        
         plusButton.frame = bottomBar.bounds
         plusButton.frame.size.width = 100
         plusButton.frame.origin.x = view.bounds.width - plusButton.frame.width
         
     }
     
-    @objc private func handleBackButton() {
+    @objc private func handleUndoButton() {
+//        stack.popGroup(animated: true, interactive: false, completion: nil)
+    }
+    
+    @objc private func handleCloseButton() {
         stack.popGroup(animated: true, interactive: false, completion: nil)
     }
     
     @objc private func handleAddButton() {
         
-        let loadingView = LoadingCard(frame: self.view.bounds)
+        let loadingView = LoadingCard(frame: view.bounds)
         let loadingViewContainer = MockCardChild(view: loadingView)
         let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
         
         let store = CardGroupStore()
+        store.simulatedDelay = 1
         let group = CardGroup(loadingCard: loadingCard, store: store, title: nil)
 
         stack.push(group: group, animated: true, completion: nil)

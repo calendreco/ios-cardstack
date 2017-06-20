@@ -153,9 +153,9 @@ extension CardStackNavigationController: UINavigationControllerDelegate {
             return PushAnimator()
         case .pop:
             if interactionController == nil {
-                return MultiPopAnimator()
+                return PopAnimator()
             } else {
-                return animator
+                return InteractivePopAnimator()
             }
             
         case .none:

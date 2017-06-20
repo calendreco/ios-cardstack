@@ -10,6 +10,61 @@ import Foundation
 import UIKit
 import AWPercentDrivenInteractiveTransition
 
+class LoadingOperation: Operation {
+    override var isAsynchronous: Bool {
+        return true
+    }
+    
+    var _finished: Bool = false
+    var _executing: Bool = false
+    
+    override var isFinished: Bool {
+        get {
+            return _finished
+        }
+        
+        set {
+            willChangeValue(forKey: "isFinished")
+            _finished = newValue
+            didChangeValue(forKey: "isFinished")
+        }
+    }
+    
+    override var isExecuting: Bool {
+        get {
+            return _executing
+        }
+        
+        set {
+            willChangeValue(forKey: "isExecuting")
+            _executing = newValue
+            didChangeValue(forKey: "isExecuting")
+        }
+    }
+    
+    let group: CardGroup
+    
+    init(group: CardGroup) {
+        self.group = group
+        super.init()
+        queuePriority = .high
+    }
+    
+    override func start() {
+        super.start()
+        
+        if isCancelled {
+            _finished = true
+        }
+        
+        isExecuting = true
+        
+        group.store.didFinishLoading = { [weak self] in
+            self?.isFinished = true
+            self?.isExecuting = false
+        }
+    }
+}
 
 class TransitionOperation: Operation {
     // TODO: Probably not necessary to abstract this out
@@ -59,6 +114,7 @@ class TransitionOperation: Operation {
     }
     
     init(parent: UIViewController, from: CardViewController, to: CardViewController, animation: Animation, dependencies: [TransitionOperation] = [], action: (() -> Void)?, completion: ((Bool) -> Void)?) {
+        precondition(to != from, "Cannot transition to the the existing UIViewController")
         self.parent = parent
         self.from = from
         self.to = to

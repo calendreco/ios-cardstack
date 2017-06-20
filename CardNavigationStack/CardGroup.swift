@@ -11,11 +11,6 @@ import UIKit
 
 class CardGroup {
     
-    // Manages paging + network requests for loading cards
-    let store: CardGroupStore
-    
-    var currentIndex: Int = 0
-    
     var currentCard: CardViewController {
         return cards[currentIndex]
     }
@@ -29,8 +24,19 @@ class CardGroup {
         return currentIndex == cards.count - 1 && store.hasLoadedAllCards && !store.isLoading
     }
     
+    var shouldShowLoadingCard: Bool {
+        return (store.isLoading && currentIndex - 1 <= cards.count)
+    }
+    
+    // Manages paging + network requests for loading cards
+    let store: CardGroupStore
+    
+    var currentIndex: Int = 0
+    
     var cards: [CardViewController] = []
+    
     var loadingCard: CardViewController
+    
     var title: String?
     
     init(loadingCard: CardViewController, store: CardGroupStore, title: String?) {
@@ -42,19 +48,22 @@ class CardGroup {
     }
     
     func willBeginSwiping() {
-        if cards.count - currentIndex < 3 && !store.isLoading && !store.hasLoadedAllCards {
-            fetchNext()
-        }
+        //
     }
     
-    func didSwipe(card: CardViewController, inDirection direction: CardStackViewController.SwipeDirection) {
+    func didSwipe(card: CardViewController, inDirection direction: PanDirection) {
+        print("Did swipe card. Incrementing current index \(currentIndex) by +1 out of \(cards.count - 1)")
         currentIndex += 1
+        if cards.count - currentIndex < 3 && !store.isLoading && !store.hasLoadedAllCards {
+            print("After swiping, we noticed we need to fetch the next page of cards")
+            fetchNext()
+        }
     }
     
     func fetchNext() {
         store.load { [weak self] cards in
             guard let `self` = self else { return }
-            self.cards.append(contentsOf: cards)
+            self.cards.append(contentsOf: cards.reversed())
         }
     }
 }

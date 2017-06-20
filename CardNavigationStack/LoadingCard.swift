@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Pilates
 
 class LoadingCard: UIView {
     
@@ -22,8 +21,12 @@ class LoadingCard: UIView {
         bottomText      = LoadingCard.generateLoadingView()
         
         super.init(frame: frame)
-        backgroundColor     = .white
-        layer.cornerRadius  = 3
+        backgroundColor = UIColor(red:0.93, green:0.93, blue:0.93, alpha:1.00)
+        layer.cornerRadius = 3
+        
+        addSubview(highlightReel)
+        addSubview(topText)
+        addSubview(bottomText)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -33,14 +36,9 @@ class LoadingCard: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let layout = LayoutNode(padding: [.left: 10.px, .top: 10.px, .right: 10.px], subnodes: [
-            LayoutNode(width: 50.pct, height: 15.px, view: topText),
-            LayoutNode(margin: [.top: 10.px], width: 70.pct, height: 15.px, view: bottomText),
-            LayoutNode(margin: [.top: 15.px], width: 100.pct, aspectRatio: 4/3, view: highlightReel)
-        ])
-        
-        let renderer = Renderer()
-        renderer.render(layout, in: self, size: bounds.size, animated: false)
+        highlightReel.frame = CGRect(x: 10, y: 10, width: bounds.width - 20, height: 260)
+        topText.frame = CGRect(x: 10, y: highlightReel.frame.maxY + 10, width: bounds.width - 20, height: 20)
+        bottomText.frame = CGRect(x: 10, y: topText.frame.maxY + 10, width: bounds.width - 20, height: 20)
         
         addShimmerEffectToView(highlightReel)
         addShimmerEffectToView(topText)
@@ -49,8 +47,8 @@ class LoadingCard: UIView {
     }
     
     private static func generateLoadingView(withSize size: CGSize = .zero) -> UIView {
-        let view = UIView(frame: CGRect(size: size))
-        view.backgroundColor = UIColor(hex: 0xCFCFCF)
+        let view = UIView(frame: CGRect(origin: .zero, size: size))
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.2)
         return view
     }
     
@@ -82,7 +80,7 @@ class LoadingCard: UIView {
         
         gradientMask.add(animation, forKey: nil)
     }
-
+    
     func stopShimmering() {
         highlightReel.layer.removeAllAnimations()
         topText.layer.removeAllAnimations()

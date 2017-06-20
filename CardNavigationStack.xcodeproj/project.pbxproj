@@ -15,9 +15,9 @@
 		DC0C85F31ECF7E4800289F3D /* CardStackNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85F21ECF7E4800289F3D /* CardStackNavigationController.swift */; };
 		DC0C85F51ECF975E00289F3D /* UIView+Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85F41ECF975E00289F3D /* UIView+Snapshot.swift */; };
 		DC0C85F91ECF987300289F3D /* VenueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC0C85F81ECF987300289F3D /* VenueViewController.swift */; };
+		DC24C3C91EF97BA00047604F /* LoadingCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC24C3C81EF97B680047604F /* LoadingCard.swift */; };
 		DC41920B1EF2D432005FD50A /* CardChild.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC41920A1EF2D432005FD50A /* CardChild.swift */; };
 		DC41920D1EF2DEE9005FD50A /* CardGroupStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC41920C1EF2DEE9005FD50A /* CardGroupStore.swift */; };
-		DC41920F1EF2E050005FD50A /* LoadingCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC41920E1EF2E050005FD50A /* LoadingCard.swift */; };
 		DC535F821EF3176F00355AE8 /* CardGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC535F811EF3176F00355AE8 /* CardGroup.swift */; };
 		DC70BCE21EF457A5007740A5 /* CardStackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70BCE11EF457A5007740A5 /* CardStackViewController.swift */; };
 		DC70BCE41EF826C9007740A5 /* TransitionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC70BCE31EF826C9007740A5 /* TransitionOperation.swift */; };
@@ -39,9 +39,9 @@
 		DC0C85F21ECF7E4800289F3D /* CardStackNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardStackNavigationController.swift; sourceTree = "<group>"; };
 		DC0C85F41ECF975E00289F3D /* UIView+Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Snapshot.swift"; sourceTree = "<group>"; };
 		DC0C85F81ECF987300289F3D /* VenueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VenueViewController.swift; sourceTree = "<group>"; };
+		DC24C3C81EF97B680047604F /* LoadingCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCard.swift; sourceTree = "<group>"; };
 		DC41920A1EF2D432005FD50A /* CardChild.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardChild.swift; sourceTree = "<group>"; };
 		DC41920C1EF2DEE9005FD50A /* CardGroupStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGroupStore.swift; sourceTree = "<group>"; };
-		DC41920E1EF2E050005FD50A /* LoadingCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoadingCard.swift; path = "../../live-ios-2/src/live/src/LoadingCard.swift"; sourceTree = "<group>"; };
 		DC535F811EF3176F00355AE8 /* CardGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGroup.swift; sourceTree = "<group>"; };
 		DC70BCE11EF457A5007740A5 /* CardStackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStackViewController.swift; sourceTree = "<group>"; };
 		DC70BCE31EF826C9007740A5 /* TransitionOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionOperation.swift; sourceTree = "<group>"; };
@@ -111,8 +111,8 @@
 				DC93791A1EF1CBF700A42E83 /* RootViewController.swift */,
 				DCD333C81EEF19190059EE99 /* Transition.swift */,
 				DC70BCE31EF826C9007740A5 /* TransitionOperation.swift */,
-				DC41920E1EF2E050005FD50A /* LoadingCard.swift */,
 				DC0C85F21ECF7E4800289F3D /* CardStackNavigationController.swift */,
+				DC24C3C81EF97B680047604F /* LoadingCard.swift */,
 				DC0C85E71ECF7DF500289F3D /* Assets.xcassets */,
 				DC0C85E91ECF7DF500289F3D /* LaunchScreen.storyboard */,
 				DC0C85EC1ECF7DF500289F3D /* Info.plist */,
@@ -252,9 +252,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC24C3C91EF97BA00047604F /* LoadingCard.swift in Sources */,
 				DC70BCE21EF457A5007740A5 /* CardStackViewController.swift in Sources */,
 				DC70BCE41EF826C9007740A5 /* TransitionOperation.swift in Sources */,
-				DC41920F1EF2E050005FD50A /* LoadingCard.swift in Sources */,
 				DCD333C71EEEEE010059EE99 /* UIPanGestureRecognizer+Direction.swift in Sources */,
 				DC0C85F91ECF987300289F3D /* VenueViewController.swift in Sources */,
 				DC41920D1EF2DEE9005FD50A /* CardGroupStore.swift in Sources */,

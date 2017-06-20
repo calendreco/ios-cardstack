@@ -52,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardGroup.swift"
-            timestampString = "519588928.627793"
+            timestampString = "519688305.471779"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
+            startingLineNumber = "15"
+            endingLineNumber = "15"
             landmarkName = "currentCard"
             landmarkType = "24">
          </BreakpointContent>
@@ -74,22 +74,6 @@
             startingLineNumber = "97"
             endingLineNumber = "97"
             landmarkName = "push(group:animated:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CardNavigationStack/TransitionOperation.swift"
-            timestampString = "519585910.384333"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "start()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -114,46 +98,127 @@
          <BreakpointContent
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
+            condition = "container.bounds.width &gt; 375"
             continueAfterRunningActions = "No"
-            filePath = "../live-ios-2/src/live/src/Transition.swift"
-            timestampString = "519588928.627968"
+            filePath = "CardNavigationStack/CardViewController.swift"
+            timestampString = "519688305.4719"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
-            landmarkName = "animateTransition(using:)"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "viewDidLayoutSubviews()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../live-ios-2/src/live/src/Transition.swift"
-            timestampString = "519588999.08507"
+            filePath = "CardNavigationStack/RootViewController.swift"
+            timestampString = "519688305.471959"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "animateTransition(using:)"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "handleAddButton()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../live-ios-2/src/live/src/Transition.swift"
-            timestampString = "519589000.220622"
+            filePath = "CardNavigationStack/CardStackViewController.swift"
+            timestampString = "519688305.472023"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
-            landmarkName = "animateTransition(using:)"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "handlePan(gesture:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CardNavigationStack/CardStackViewController.swift"
+            timestampString = "519688305.472462"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "166"
+            endingLineNumber = "166"
+            landmarkName = "popCard(for:animated:interactive:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CardNavigationStack/CardGroup.swift"
+            timestampString = "519688305.472798"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
+            landmarkName = "CardGroup"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CardNavigationStack.CardGroup.loadingCard.getter : CardNavigationStack.CardViewController"
+                  moduleName = "CardNavigationStack"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardGroup.swift"
+                  timestampString = "519684496.339139"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "36">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "CardNavigationStack.CardGroup.loadingCard.setter : CardNavigationStack.CardViewController"
+                  moduleName = "CardNavigationStack"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardGroup.swift"
+                  timestampString = "519684496.340508"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "1"
+            continueAfterRunningActions = "No"
+            filePath = "CardNavigationStack/CardStackViewController.swift"
+            timestampString = "519688305.472854"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "fetchNextCard(for:isSameGroup:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
