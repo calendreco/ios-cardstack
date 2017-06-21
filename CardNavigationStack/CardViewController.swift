@@ -86,7 +86,14 @@ class CardViewController: UIViewController {
         return view
     }()
     
-    fileprivate(set) var snapshot: UIView? // We store our snapshot and update it whenever our child tells us we need to
+    fileprivate(set) var snapshot: UIView? { // We store our snapshot and update it whenever our child tells us we need to
+        didSet {
+            snapshot?.layer.shadowOpacity = 0.25
+            snapshot?.layer.shadowColor = UIColor.black.cgColor
+            snapshot?.layer.shadowRadius = 5
+            snapshot?.clipsToBounds = false
+        }
+    }
     
     // MARK: Scroll delegate helper flags
     fileprivate struct ScrollFlags {
@@ -177,6 +184,11 @@ class CardViewController: UIViewController {
         }
         
         self.snapshot = snapshot
+    }
+    
+    func resetSnapshot() {
+        snapshot?.removeFromSuperview()
+        snapshot = nil
     }
     
 }

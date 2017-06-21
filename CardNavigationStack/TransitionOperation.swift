@@ -54,14 +54,15 @@ class LoadingOperation: Operation {
         super.start()
         
         if isCancelled {
-            _finished = true
+            self.isFinished = true
         }
         
         isExecuting = true
         
-        group.store.didFinishLoading = { [weak self] in
-            self?.isFinished = true
-            self?.isExecuting = false
+        group.store.didFinishLoading = { [unowned self] in
+            // TODO: Why are we losing our `self` here?
+            self.isFinished = true
+            self.isExecuting = false
         }
     }
 }
@@ -75,19 +76,37 @@ class TransitionOperation: Operation {
     }
     
     let parent: UIViewController
-    let from: CardViewController
-    let to: CardViewController
+    let fromBlock: () -> CardViewController?
+    let toBlock: () -> CardViewController?
+    
+    var from: CardViewController?
+    var to: CardViewController?
+    
     let animation: Animation
     var transition: AWPercentDrivenInteractiveTransition?
-    var action: (() -> Void)?
-    var completion: ((Bool) -> Void)?
+    var action: ((TransitionOperation) -> Void)?
+    var completion: ((Bool, CardViewController?) -> Void)?
     
     override var isAsynchronous: Bool {
         return true
     }
     
+    var _cancelled: Bool = false
     var _finished: Bool = false
     var _executing: Bool = false
+    
+    override var isCancelled: Bool {
+        get {
+            return _cancelled
+        }
+        
+        set {
+            willChangeValue(forKey: "isCancelled")
+            _cancelled = newValue
+            didChangeValue(forKey: "isCancelled")
+        }
+    }
+    
     
     override var isFinished: Bool {
         get {
@@ -113,11 +132,11 @@ class TransitionOperation: Operation {
         }
     }
     
-    init(parent: UIViewController, from: CardViewController, to: CardViewController, animation: Animation, dependencies: [TransitionOperation] = [], action: (() -> Void)?, completion: ((Bool) -> Void)?) {
-        precondition(to != from, "Cannot transition to the the existing UIViewController")
+    init(parent: UIViewController, from: @escaping () -> CardViewController?, to: @escaping () -> CardViewController?, animation: Animation, dependencies: [TransitionOperation] = [], action: ((TransitionOperation) -> Void)?, completion: ((Bool, CardViewController?) -> Void)?) {
+//        precondition(to != from, "Cannot transition to the the existing UIViewController")
         self.parent = parent
-        self.from = from
-        self.to = to
+        self.fromBlock = from
+        self.toBlock = to
         self.animation = animation
         self.action = action
         self.completion = completion
@@ -133,12 +152,23 @@ class TransitionOperation: Operation {
         super.start()
         
         if isCancelled {
-            _finished = true
+            isFinished = true
         }
         
         isExecuting = true
         
-        action?()
+        guard let to = toBlock(), let from = fromBlock() else {
+            isCancelled = true
+            isFinished = true
+            isExecuting = false
+            self.completion?(false, nil)
+            return
+        }
+        
+        self.to = to
+        self.from = from
+        
+        action?(self)
         parent.addChildViewController(to)
         
         let context = TransitionContext(from: from, to: to)
@@ -149,16 +179,16 @@ class TransitionOperation: Operation {
             guard let `self` = self else { return }
             
             if didComplete {
-                self.from.view.removeFromSuperview()
-                self.from.removeFromParentViewController()
-                self.from.didMove(toParentViewController: nil)
-                self.to.didMove(toParentViewController: self.parent)
+                from.view.removeFromSuperview()
+                from.removeFromParentViewController()
+                from.didMove(toParentViewController: nil)
+                to.didMove(toParentViewController: self.parent)
             } else {
-                self.to.view.removeFromSuperview()
-                self.to.removeFromParentViewController()
+                to.view.removeFromSuperview()
+                to.removeFromParentViewController()
             }
             
-            self.completion?(didComplete)
+            self.completion?(didComplete, to)
             self.isFinished = true
             self.isExecuting = false
         }

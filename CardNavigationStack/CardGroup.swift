@@ -33,6 +33,8 @@ class CardGroup {
         return (store.isLoading && currentIndex - 1 <= cards.count)
     }
     
+    private var swipeDirections: [PanDirection] = []
+    
     // Manages paging + network requests for loading cards
     let store: CardGroupStore
     
@@ -52,6 +54,15 @@ class CardGroup {
         fetchNext()
     }
     
+    func swipeDirection(for card: CardViewController) -> PanDirection? {
+        guard let index = cards.index(of: card), swipeDirections.count > index else {
+            return nil
+            
+        }
+        
+        return swipeDirections[index]
+    }
+    
     func willBeginSwiping() {
         //
     }
@@ -61,6 +72,12 @@ class CardGroup {
         if cards.count - currentIndex < 3 && !store.isLoading && !store.hasLoadedAllCards {
             fetchNext()
         }
+        swipeDirections.append(direction)
+    }
+    
+    func didUndoSwipe(card: CardViewController) {
+        currentIndex -= 1
+        swipeDirections.removeLast()
     }
     
     func fetchNext() {

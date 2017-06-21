@@ -14,7 +14,7 @@ class CardGroupStore {
     var hasLoadedAllCards: Bool = false
     var isLoading: Bool = false
     var didFinishLoading: (() -> Void)?
-    var simulatedDelay: Int = 26
+    var simulatedDelay: Int = 1
     var fixedColor: UIColor = UIColor.random()
     var loadCounter: Int = 3
     
@@ -28,7 +28,7 @@ class CardGroupStore {
             return CardViewController(child: card, state: .stack)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(simulatedDelay)) { [weak self] in
             self?.isLoading = false
             
             completion?(cards)
