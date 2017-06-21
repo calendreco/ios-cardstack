@@ -15,32 +15,34 @@ class LoadingOperation: Operation {
         return true
     }
     
-    var _finished: Bool = false
-    var _executing: Bool = false
-    
-    override var isFinished: Bool {
-        get {
-            return _finished
+    private var _executing: Bool = false {
+        willSet {
+            willChangeValue(forKey: "isExecuting")
         }
         
-        set {
-            willChangeValue(forKey: "isFinished")
-            _finished = newValue
-            didChangeValue(forKey: "isFinished")
+        didSet {
+            didChangeValue(forKey: "isExecuting")
         }
     }
     
     override var isExecuting: Bool {
-        get {
-            return _executing
+        return _executing
+    }
+    
+    private var _finished: Bool = false {
+        willSet {
+            willChangeValue(forKey: "isFinished")
         }
         
-        set {
-            willChangeValue(forKey: "isExecuting")
-            _executing = newValue
-            didChangeValue(forKey: "isExecuting")
+        didSet {
+            didChangeValue(forKey: "isFinished")
         }
     }
+    
+    override var isFinished: Bool {
+        return _finished
+    }
+    
     
     let group: CardGroup
     
@@ -54,15 +56,15 @@ class LoadingOperation: Operation {
         super.start()
         
         if isCancelled {
-            self.isFinished = true
+            _finished = true
         }
         
-        isExecuting = true
+        _executing = true
         
         group.store.didFinishLoading = { [unowned self] in
             // TODO: Why are we losing our `self` here?
-            self.isFinished = true
-            self.isExecuting = false
+            self._finished = true
+            self._executing = false
         }
     }
 }
@@ -91,49 +93,49 @@ class TransitionOperation: Operation {
         return true
     }
     
-    var _cancelled: Bool = false
-    var _finished: Bool = false
-    var _executing: Bool = false
-    
-    override var isCancelled: Bool {
-        get {
-            return _cancelled
+    private var _cancelled: Bool = false {
+        willSet {
+            willChangeValue(forKey: "isCancelled")
         }
         
-        set {
-            willChangeValue(forKey: "isCancelled")
-            _cancelled = newValue
+        didSet {
             didChangeValue(forKey: "isCancelled")
         }
     }
     
-    
-    override var isFinished: Bool {
-        get {
-            return _finished
-        }
-        
-        set {
-            willChangeValue(forKey: "isFinished")
-            _finished = newValue
-            didChangeValue(forKey: "isFinished")
-        }
+    override var isCancelled: Bool {
+        return _cancelled
     }
     
-    override var isExecuting: Bool {
-        get {
-            return _executing
+    private var _executing: Bool = false {
+        willSet {
+            willChangeValue(forKey: "isExecuting")
         }
         
-        set {
-            willChangeValue(forKey: "isExecuting")
-            _executing = newValue
+        didSet {
             didChangeValue(forKey: "isExecuting")
         }
     }
     
+    override var isExecuting: Bool {
+        return _executing
+    }
+    
+    private var _finished: Bool = false {
+        willSet {
+            willChangeValue(forKey: "isFinished")
+        }
+        
+        didSet {
+            didChangeValue(forKey: "isFinished")
+        }
+    }
+    
+    override var isFinished: Bool {
+        return _finished
+    }
+    
     init(parent: UIViewController, from: @escaping () -> CardViewController?, to: @escaping () -> CardViewController?, animation: Animation, dependencies: [TransitionOperation] = [], action: ((TransitionOperation) -> Void)?, completion: ((Bool, CardViewController?) -> Void)?) {
-//        precondition(to != from, "Cannot transition to the the existing UIViewController")
         self.parent = parent
         self.fromBlock = from
         self.toBlock = to
@@ -152,18 +154,20 @@ class TransitionOperation: Operation {
         super.start()
         
         if isCancelled {
-            isFinished = true
+            _finished = true
         }
         
-        isExecuting = true
+        _executing = true
         
         guard let to = toBlock(), let from = fromBlock() else {
-            isCancelled = true
-            isFinished = true
-            isExecuting = false
+            _cancelled = true
+            _finished = true
+            _executing = false
             self.completion?(false, nil)
             return
         }
+        
+        precondition(to != from, "Cannot transition to the the existing UIViewController")
         
         self.to = to
         self.from = from
@@ -189,8 +193,8 @@ class TransitionOperation: Operation {
             }
             
             self.completion?(didComplete, to)
-            self.isFinished = true
-            self.isExecuting = false
+            self._finished = true
+            self._executing = false
         }
         
         if animation.interactive, let transition = AWPercentDrivenInteractiveTransition(animator: animation.animator) {
