@@ -73,17 +73,12 @@ class CardStackViewController: UIViewController {
             // TODO: Should we check that group.shouldShowLoadingCard instead?
             panGesture.isEnabled = currentCard != group.loadingCard
             
-            // Add our loading operation to block the operation queue
-            let operation = LoadingOperation(group: group)
-            operation.completionBlock = { [weak self] in
+            group.store.didFinishLoading = { [weak self] in
                 DispatchQueue.main.async {
                     self?.panGesture.isEnabled = true
-//                    self?.hideLoadingCard(for: group, animated: true, completion: nil)
+                    self?.hideLoadingCard(for: group, animated: true, completion: nil)
                 }
             }
-            
-            queue.addOperation(operation)
-            self.hideLoadingCard(for: group, animated: true, completion: nil)
         }
     }
     

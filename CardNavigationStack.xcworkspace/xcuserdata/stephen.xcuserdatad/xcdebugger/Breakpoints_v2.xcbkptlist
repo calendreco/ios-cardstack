@@ -52,7 +52,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardGroup.swift"
-            timestampString = "519754090.143911"
+            timestampString = "519755226.99039"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "15"
@@ -116,7 +116,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CardNavigationStack/CardGroup.swift"
-            timestampString = "519754090.144193"
+            timestampString = "519755226.990686"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "45"
@@ -164,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519754090.144245"
+            timestampString = "519755226.99074"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
             landmarkName = "push(group:animated:completion:)"
             landmarkType = "7">
             <Actions>
@@ -188,11 +188,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "Yes"
             filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519754090.144417"
+            timestampString = "519755226.991192"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "246"
-            endingLineNumber = "246"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
             landmarkName = "hideLoadingCard(for:animated:completion:)"
             landmarkType = "7">
             <Actions>
@@ -203,149 +203,6 @@
                   </ActionContent>
                </BreakpointActionProxy>
             </Actions>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519754090.14447"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "checkForLoadingState(for:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519754090.144512"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "checkForLoadingState(for:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "CardNavigationStack.CardStackViewController.(checkForLoadingState in _38BCB0145CB1EF926CAEF17BF188632E)(for: CardNavigationStack.CardGroup) -&gt; ()"
-                  moduleName = "CardNavigationStack"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardStackViewController.swift"
-                  timestampString = "519752425.344813"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "78"
-                  endingLineNumber = "78"
-                  offsetFromSymbolStart = "244">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in CardNavigationStack.CardStackViewController.(checkForLoadingState in _38BCB0145CB1EF926CAEF17BF188632E)(for: CardNavigationStack.CardGroup) -&gt; ()"
-                  moduleName = "CardNavigationStack"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardStackViewController.swift"
-                  timestampString = "519752425.346683"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "78"
-                  endingLineNumber = "78"
-                  offsetFromSymbolStart = "16">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #1 () -&gt; () in CardNavigationStack.CardStackViewController.(checkForLoadingState in _38BCB0145CB1EF926CAEF17BF188632E)(for: CardNavigationStack.CardGroup) -&gt; ()"
-                  moduleName = "CardNavigationStack"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardStackViewController.swift"
-                  timestampString = "519752425.348867"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "78"
-                  endingLineNumber = "78"
-                  offsetFromSymbolStart = "16">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CardNavigationStack/TransitionOperation.swift"
-            timestampString = "519754090.144555"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
-            landmarkName = "start()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CardNavigationStack/CardStackViewController.swift"
-            timestampString = "519754090.144931"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "79"
-            endingLineNumber = "79"
-            landmarkName = "checkForLoadingState(for:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in CardNavigationStack.CardStackViewController.(checkForLoadingState in _38BCB0145CB1EF926CAEF17BF188632E)(for: CardNavigationStack.CardGroup) -&gt; ()"
-                  moduleName = "CardNavigationStack"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardStackViewController.swift"
-                  timestampString = "519752425.362934"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "79"
-                  endingLineNumber = "79"
-                  offsetFromSymbolStart = "28">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #1 () -&gt; () in CardNavigationStack.CardStackViewController.(checkForLoadingState in _38BCB0145CB1EF926CAEF17BF188632E)(for: CardNavigationStack.CardGroup) -&gt; ()"
-                  moduleName = "CardNavigationStack"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/stephen/ios/CardNavigationStack/CardNavigationStack/CardStackViewController.swift"
-                  timestampString = "519752425.365128"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "78"
-                  endingLineNumber = "78"
-                  offsetFromSymbolStart = "16">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

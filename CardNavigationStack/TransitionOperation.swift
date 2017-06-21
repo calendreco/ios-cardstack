@@ -10,65 +10,6 @@ import Foundation
 import UIKit
 import AWPercentDrivenInteractiveTransition
 
-class LoadingOperation: Operation {
-    override var isAsynchronous: Bool {
-        return true
-    }
-    
-    private var _executing: Bool = false {
-        willSet {
-            willChangeValue(forKey: "isExecuting")
-        }
-        
-        didSet {
-            didChangeValue(forKey: "isExecuting")
-        }
-    }
-    
-    override var isExecuting: Bool {
-        return _executing
-    }
-    
-    private var _finished: Bool = false {
-        willSet {
-            willChangeValue(forKey: "isFinished")
-        }
-        
-        didSet {
-            didChangeValue(forKey: "isFinished")
-        }
-    }
-    
-    override var isFinished: Bool {
-        return _finished
-    }
-    
-    
-    let group: CardGroup
-    
-    init(group: CardGroup) {
-        self.group = group
-        super.init()
-        queuePriority = .high
-    }
-    
-    override func start() {
-        super.start()
-        
-        if isCancelled {
-            _finished = true
-        }
-        
-        _executing = true
-        
-        group.store.didFinishLoading = { [unowned self] in
-            // TODO: Why are we losing our `self` here?
-            self._finished = true
-            self._executing = false
-        }
-    }
-}
-
 class TransitionOperation: Operation {
     // TODO: Probably not necessary to abstract this out
     struct Animation {
@@ -88,10 +29,6 @@ class TransitionOperation: Operation {
     var transition: AWPercentDrivenInteractiveTransition?
     var action: ((TransitionOperation) -> Void)?
     var completion: ((Bool, CardViewController?) -> Void)?
-    
-    override var isAsynchronous: Bool {
-        return true
-    }
     
     private var _cancelled: Bool = false {
         willSet {
@@ -151,7 +88,6 @@ class TransitionOperation: Operation {
     }
     
     override func start() {
-        super.start()
         
         if isCancelled {
             _finished = true
