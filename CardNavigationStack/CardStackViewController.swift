@@ -18,7 +18,6 @@ class CardStackViewController: UIViewController {
     private lazy var queue: OperationQueue = {
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
-        queue.underlyingQueue = DispatchQueue.main
         return queue
     }()
     
@@ -134,7 +133,7 @@ class CardStackViewController: UIViewController {
         }
         
         let to: () -> CardViewController? = { [weak self] in
-            guard let `self` = self else {
+            guard let `self` = self, self.groups.count > 1 else {
                 return nil
             }
             
@@ -268,7 +267,7 @@ class CardStackViewController: UIViewController {
         case .began:
             
             // Check that we have a valid screenshot, that we aren't already transitioning, and that it's a horizontal pan
-            guard gesture.isHorizontal(), let snapshot = currentCard.snapshot, queue.operations.count == 0 else {
+            guard gesture.isHorizontal(), let snapshot = currentCard.snapshot, currentCard != groups.last?.loadingCard, queue.operations.count == 0 else {
                 gesture.isEnabled = false
                 gesture.isEnabled = true
                 return

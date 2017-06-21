@@ -11,7 +11,7 @@ import UIKit
 import AWPercentDrivenInteractiveTransition
 
 class TransitionOperation: Operation {
-    // TODO: Probably not necessary to abstract this out
+
     struct Animation {
         let animator: UIViewControllerAnimatedTransitioning
         let interactive: Bool
@@ -30,48 +30,6 @@ class TransitionOperation: Operation {
     var action: ((TransitionOperation) -> Void)?
     var completion: ((Bool, CardViewController?) -> Void)?
     
-    private var _cancelled: Bool = false {
-        willSet {
-            willChangeValue(forKey: "isCancelled")
-        }
-        
-        didSet {
-            didChangeValue(forKey: "isCancelled")
-        }
-    }
-    
-    override var isCancelled: Bool {
-        return _cancelled
-    }
-    
-    private var _executing: Bool = false {
-        willSet {
-            willChangeValue(forKey: "isExecuting")
-        }
-        
-        didSet {
-            didChangeValue(forKey: "isExecuting")
-        }
-    }
-    
-    override var isExecuting: Bool {
-        return _executing
-    }
-    
-    private var _finished: Bool = false {
-        willSet {
-            willChangeValue(forKey: "isFinished")
-        }
-        
-        didSet {
-            didChangeValue(forKey: "isFinished")
-        }
-    }
-    
-    override var isFinished: Bool {
-        return _finished
-    }
-    
     init(parent: UIViewController, from: @escaping () -> CardViewController?, to: @escaping () -> CardViewController?, animation: Animation, dependencies: [TransitionOperation] = [], action: ((TransitionOperation) -> Void)?, completion: ((Bool, CardViewController?) -> Void)?) {
         self.parent = parent
         self.fromBlock = from
@@ -83,61 +41,59 @@ class TransitionOperation: Operation {
         super.init()
         
         self.qualityOfService = .userInteractive
-        // TODO: Completion block
+
         dependencies.forEach { addDependency($0) }
     }
     
-    override func start() {
-        
-        if isCancelled {
-            _finished = true
-        }
-        
-        _executing = true
-        
-        guard let to = toBlock(), let from = fromBlock() else {
-            _cancelled = true
-            _finished = true
-            _executing = false
-            self.completion?(false, nil)
-            return
-        }
-        
-        precondition(to != from, "Cannot transition to the the existing UIViewController")
-        
-        self.to = to
-        self.from = from
-        
-        action?(self)
-        parent.addChildViewController(to)
-        
-        let context = TransitionContext(from: from, to: to)
-        context.isInteractive = animation.interactive
-        context.isAnimated = animation.animated
-        
-        context.completion = { [weak self] didComplete in
-            guard let `self` = self else { return }
+    override func main() {
+        let semaphore = DispatchSemaphore(value: 0)
+
+        DispatchQueue.main.async { [unowned self] in
             
-            if didComplete {
-                from.view.removeFromSuperview()
-                from.removeFromParentViewController()
-                from.didMove(toParentViewController: nil)
-                to.didMove(toParentViewController: self.parent)
-            } else {
-                to.view.removeFromSuperview()
-                to.removeFromParentViewController()
+            guard let to = self.toBlock(), let from = self.fromBlock() else {
+                self.completion?(false, nil)
+                semaphore.signal()
+                return
+            }
+
+            precondition(to != from, "Cannot transition to the the existing UIViewController")
+            
+            self.to = to
+            self.from = from
+            
+            self.action?(self)
+            self.parent.addChildViewController(to)
+            
+            let context = TransitionContext(from: from, to: to)
+            context.isInteractive = self.animation.interactive
+            context.isAnimated = self.animation.animated
+            
+            context.completion = { [unowned self] didComplete in
+                
+                if didComplete {
+                    from.view.removeFromSuperview()
+                    from.removeFromParentViewController()
+                    from.didMove(toParentViewController: nil)
+                    to.didMove(toParentViewController: self.parent)
+                } else {
+                    to.view.removeFromSuperview()
+                    to.removeFromParentViewController()
+                }
+                
+                self.completion?(didComplete, to)
+                semaphore.signal()
             }
             
-            self.completion?(didComplete, to)
-            self._finished = true
-            self._executing = false
+            if self.animation.interactive, let transition = AWPercentDrivenInteractiveTransition(animator: self.animation.animator) {
+                self.transition = transition
+                transition.startInteractiveTransition(context)
+            } else {
+                self.animation.animator.animateTransition(using: context)
+            }
+
         }
         
-        if animation.interactive, let transition = AWPercentDrivenInteractiveTransition(animator: animation.animator) {
-            self.transition = transition
-            transition.startInteractiveTransition(context)
-        } else {
-            animation.animator.animateTransition(using: context)
-        }
+        semaphore.wait()
     }
+
 }
