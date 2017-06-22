@@ -16,28 +16,27 @@ class CardGroupStore {
     var didFinishLoading: (() -> Void)?
     var simulatedDelay: Int = 1
     var fixedColor: UIColor = UIColor.random()
-    var loadCounter: Int = 3
+    var loadCounter: Int = 2
     
-    func load(withCompletion completion: (([CardViewController]) -> Void)?) {
+    func load(withCompletion completion: (([UIColor]) -> Void)?) {
         print("Loading more cards...")
         
         isLoading = true
         
-        let cards = (0..<Int.random(from: 4, to: 9)).map { _ -> CardViewController in
-            let card = VenueView(background: fixedColor)
-            return CardViewController(child: card, state: .stack)
+        let colors = (0..<Int.random(from: 4, to: 9)).map { _ -> UIColor in
+            return fixedColor
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(simulatedDelay)) { [weak self] in
             self?.isLoading = false
             
-            completion?(cards)
+            completion?(colors)
             
             self?.didFinishLoading?()
             self?.loadCounter -= 1
             self?.hasLoadedAllCards = (self?.loadCounter == 0)
             
-            print("Finished loading \(cards.count) more cards!")
+            print("Finished loading \(colors.count) more cards!")
         }
     }
 }

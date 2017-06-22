@@ -9,11 +9,17 @@
 import Foundation
 import UIKit
 import AWPercentDrivenInteractiveTransition
+import pop
 
 // TODO: Allow `initial -> ViewController` transition
 // TODO: Allow `ViewController -> Empty` transition (dismiss last card)
 
+protocol CardStackViewDelegate: class {
+    func didSwipe(card: CardViewController, inDirection direction: PanDirection)
+}
+
 class CardStackViewController: UIViewController {
+    weak var delegate: CardStackViewDelegate?
     
     private lazy var queue: OperationQueue = {
         let queue = OperationQueue()
@@ -112,13 +118,13 @@ class CardStackViewController: UIViewController {
     }
     
     // Convenience method that will pop either card/group based on conditions
-    func pop(animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
+    func pop(animated: Bool, interactive: Bool, withAnimator animator: UIViewControllerAnimatedTransitioning, completion: ((Bool) -> Void)?) {
         guard let currentGroup = groups.last else { return }
         
         if currentGroup.isLastCard == true {
             popGroup(animated: animated, interactive: interactive, completion: completion)
         } else {
-            popCard(for: currentGroup, animated: animated, interactive: interactive, completion: completion)
+            popCard(for: currentGroup, animated: animated, interactive: interactive, animator: animator, completion: completion)
         }
     }
     
@@ -141,7 +147,7 @@ class CardStackViewController: UIViewController {
             return self.fetchNextCard(for: nextGroup, isSameGroup: false)
         }
         
-        let animator: UIViewControllerAnimatedTransitioning = interactive ? InteractivePopAnimator() : PopAnimator()
+        let animator: UIViewControllerAnimatedTransitioning = interactive ? InteractiveGroupPopAnimator() : PopGroupAnimator()
         let animation = TransitionOperation.Animation(animator: animator, interactive: interactive, animated: animated)
         
         let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete, toViewController in
@@ -156,7 +162,7 @@ class CardStackViewController: UIViewController {
         queue.addOperation(operation)
     }
     
-    func popCard(for group: CardGroup, animated: Bool, interactive: Bool, completion: ((Bool) -> Void)?) {
+    func popCard(for group: CardGroup, animated: Bool, interactive: Bool, animator: UIViewControllerAnimatedTransitioning = InteractivePopAnimator(), completion: ((Bool) -> Void)?) {
         let from: () -> CardViewController? = { [weak self] in
             return self?.currentCard
         }
@@ -164,7 +170,7 @@ class CardStackViewController: UIViewController {
             return self?.fetchNextCard(for: group, isSameGroup: true)
         }
         
-        let animator: UIViewControllerAnimatedTransitioning = InteractivePopAnimator()
+//        let animator: UIViewControllerAnimatedTransitioning = InteractivePopAnimator()
         let animation = TransitionOperation.Animation(animator: animator, interactive: interactive, animated: animated)
         
         let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete, toViewController in
@@ -180,7 +186,7 @@ class CardStackViewController: UIViewController {
 
     }
     
-    func undoPopCard(animated: Bool, completion: ((Bool) -> Void)?) {
+    func undoPopCard(animated: Bool, interactive: Bool = false, completion: ((Bool) -> Void)?) {
         
         let animator = UndoPopAnimator()
         
@@ -202,7 +208,7 @@ class CardStackViewController: UIViewController {
             return to
         }
         
-        let animation = TransitionOperation.Animation(animator: animator, interactive: false, animated: animated)
+        let animation = TransitionOperation.Animation(animator: animator, interactive: interactive, animated: animated)
         let operation = TransitionOperation(parent: self, from: from, to: to, animation: animation, action: nil, completion: { [weak self] didComplete, toViewController in
             if didComplete, let to = toViewController {
                 self?.currentCard = to
@@ -242,16 +248,20 @@ class CardStackViewController: UIViewController {
     
     private func shakeCard(_ card: CardViewController) {
         let animation = CABasicAnimation(keyPath: "position")
-        animation.duration = 0.05
+        animation.duration = 0.03
         animation.repeatCount = 3
         animation.autoreverses = true
         
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.error)
         
-        animation.fromValue = NSValue.init(cgPoint: CGPoint(x: card.view.center.x - 10, y: card.view.center.y))
-        animation.toValue = NSValue.init(cgPoint: CGPoint(x: card.view.center.x + 10, y: card.view.center.y))
+        animation.fromValue = NSValue.init(cgPoint: CGPoint(x: card.view.center.x - 6, y: card.view.center.y))
+        animation.toValue = NSValue.init(cgPoint: CGPoint(x: card.view.center.x + 6, y: card.view.center.y))
         card.view.layer.add(animation, forKey: "position")
+    }
+    
+    private func angle(for percent: CGFloat, inDirection direction: PanDirection) -> CGFloat {
+        return direction == .right ? .pi / 10 : -.pi / 10
     }
     
     // MARK: Pan gesture handling
@@ -260,8 +270,8 @@ class CardStackViewController: UIViewController {
     @objc private func handlePan(gesture: UIPanGestureRecognizer) {
         
         let translation = panGesture.translation(in: nil)
-        let angle: CGFloat = translation.x > 0 ? .pi / 10 : -.pi / 10
         let percent = max(0, min(1, fabs(translation.x / (view.bounds.width / 2))))
+        let angle: CGFloat = self.angle(for: percent, inDirection: translation.x > 0 ? .right : .left)
         
         switch gesture.state {
         case .began:
@@ -279,44 +289,60 @@ class CardStackViewController: UIViewController {
             // Add our snapshot to the viewport, hide our viewController
             view.addSubview(snapshot)
             
+            
             // Position our snapshot to match the card's position
             let center = CGPoint(x: currentCard.container.center.x,
                                  y: currentCard.container.frame.minY + (snapshot.frame.height / 2))
+            
             
             snapshot.center = center
             snapshot.layer.zPosition = 50
             
             // Hide our current viewController since we're using the snapshot instead
-            currentCard.view.isHidden = true
-            
+//            currentCard.view.isHidden = gesture.currentDirection == .left ? false : true
+            let animator: UIViewControllerAnimatedTransitioning
+            if false {// gesture.currentDirection == .left {
+                snapshot.isHidden = true
+                currentCard.view.isHidden = false
+                let undoAnimator = UndoPopAnimator()
+                undoAnimator.direction = .right
+                animator = undoAnimator
+//                undoPopCard(animated: true, interactive: true, completion: nil)
+            } else {
+                snapshot.isHidden = false
+                currentCard.view.isHidden = true
+                animator = InteractivePopAnimator()
+//                pop(animated: true, interactive: true, withAnimator: animator, completion: nil)
+
+            }
+            pop(animated: true, interactive: true, withAnimator: animator, completion: nil)
+
             // Begin a pop transition that's animated and interactive
-            pop(animated: true, interactive: true, completion: nil)
             
         case .changed:
             // Update our UIViewController transition's percentage
             (queue.operations.first as? TransitionOperation)?.transition?.update(percent)
             
             // Apply a transform for rotation/translation of the dragging card
-            currentCard.snapshot?.transform = CGAffineTransform(translationX: translation.x, y: translation.y)
-                .concatenating(CGAffineTransform.init(rotationAngle: angle * percent))
+            let translationTransform = CGAffineTransform(translationX: translation.x, y: translation.y)
+            let rotationTransform = CGAffineTransform.init(rotationAngle: angle * percent)
+            
+            currentCard.snapshot?.layer.transform = CATransform3DMakeAffineTransform(translationTransform.concatenating(rotationTransform))
             
         case .ended:
             // TODO: Implement better handling with velocity/percentage complete
             feedbackGenerator.prepare()
-            
-            guard let snapshot = currentCard.snapshot else {
-                return
-            }
-            
+
             // Check if we should finish throwing the card or snap it back to the center
             if percent > 0.25 {
                 let direction: PanDirection = translation.x > 0 ? .right : .left
                 groups.last?.didSwipe(card: currentCard, inDirection: direction)
-                throwSnapshot(snapshot, forCard: currentCard, inDirection: direction, withTranslation: translation)
+                throwCard(currentCard, inDirection: direction, withTranslation: translation, andVelocity: gesture.velocity(in: nil))
                 (queue.operations.first as? TransitionOperation)?.transition?.finish()
+                delegate?.didSwipe(card: currentCard, inDirection: direction)
             } else {
-                resetSnapshot(snapshot)
                 (queue.operations.first as? TransitionOperation)?.transition?.cancel()
+                resetCard(currentCard, fromTranslation: translation)
             }
             
             // TODO: Reset currentTransition to nil after finish
@@ -325,27 +351,78 @@ class CardStackViewController: UIViewController {
         }
     }
     
-    // MARK: Pan gesture helpers
-    
-    private func throwSnapshot(_ view: UIView, forCard card: CardViewController,  inDirection direction: PanDirection, withTranslation translation: CGPoint) {
-        let finalX: CGFloat = direction == .left ? -view.bounds.width : view.bounds.width
-        feedbackGenerator.impactOccurred()
-        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.8, options: .allowUserInteraction, animations: {
-            view.center.x += finalX
-        }, completion: { finished in
-            card.resetSnapshot()
-        })
+    private let minimumMagnitudeThreshold: CGFloat = 140
+    private func normalizedMagnitude(for velocity: CGVector) -> CGFloat {
+        let magnitude = sqrt((velocity.dx * velocity.dx) + (velocity.dy * velocity.dy))
+        
+        let adjustmentThreshold: CGFloat = 50
+        if magnitude < 0 {
+            return max(-minimumMagnitudeThreshold, magnitude) - adjustmentThreshold
+        } else {
+            return min(minimumMagnitudeThreshold, magnitude) + adjustmentThreshold
+        }
     }
     
-    private func resetSnapshot(_ view: UIView) {
-        // TODO: Fix the animation not working when a transition is active
-        UIView.animate(withDuration: 0.2, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.8, options: .allowUserInteraction, animations: {
-            view.transform = .identity
-        }, completion: { finished in
-            view.removeFromSuperview()
-            view.isHidden = true
-            self.currentCard.view.isHidden = false
-        })
+    // MARK: Pan gesture helpers
+    // NOTE: (ss) Using CoreAnimation instead of UIView animations fixed the issue where UIReplicantViews would stick around after explicitly being removed, hidden, etc.
+    private func throwCard(_ card: CardViewController, inDirection direction: PanDirection, withTranslation translation: CGPoint, andVelocity velocity: CGPoint) {
+        guard let snapshot = card.snapshot else {
+            fatalError("invalid snapshot when throwing card: \(card)")
+        }
+        
+        let adjustedVelocity = CGPoint(x: velocity.x / 10, y: velocity.y / 10)
+        let deltaX: CGFloat = translation.x > 0 ? view.bounds.width * 1.25 : -view.bounds.width * 1.25
+        let angle = self.angle(for: 1.0, inDirection: direction)
+        let targetPoint = CGPoint(x: deltaX, y: translation.y)// * 1.5)
+        
+        let swipePositionAnimation = POPSpringAnimation(propertyNamed: kPOPLayerTranslationXY)
+        swipePositionAnimation?.fromValue = NSValue(cgPoint:translation)
+        swipePositionAnimation?.toValue = NSValue(cgPoint: targetPoint)
+        swipePositionAnimation?.velocity = adjustedVelocity
+        swipePositionAnimation?.completionBlock = {
+            (_, _) in
+            card.resetSnapshot()
+        }
+        
+        snapshot.layer.pop_add(swipePositionAnimation, forKey: "swipePositionAnimation")
+        
+        let swipeRotationAnimation = POPSpringAnimation(propertyNamed: kPOPLayerRotation)
+        swipeRotationAnimation?.fromValue = POPLayerGetRotationZ(snapshot.layer)
+        swipeRotationAnimation?.toValue = angle
+        swipePositionAnimation?.velocity = velocity
+        
+        
+        snapshot.layer.pop_add(swipeRotationAnimation, forKey: "swipeRotationAnimation")
+    }
+    
+    private func resetCard(_ card: CardViewController, fromTranslation translation: CGPoint) {
+        guard let snapshot = card.snapshot else { return }
+        
+        CATransaction.begin()
+        let translationAnimation = CASpringAnimation(keyPath: "translation")
+        translationAnimation.initialVelocity = 0.9
+        translationAnimation.duration = 0.4
+        translationAnimation.isRemovedOnCompletion = false
+//        translationAnimation.fromValue = NSValue.init(caTransform3D: CATransform3DMakeAffineTransform(CGAffineTransform(translationX: translation.x, y: translation.y).concatenating(CGAffineTransform(rotationAngle: 0))))
+        translationAnimation.toValue = NSValue.init(caTransform3D: CATransform3DMakeAffineTransform(CGAffineTransform(translationX: 0, y: 0).concatenating(CGAffineTransform(rotationAngle: 0))))
+        
+        let rotationAnimation = CASpringAnimation(keyPath: "rotation")
+        rotationAnimation.initialVelocity = 0.9
+        rotationAnimation.duration = 0.4
+        rotationAnimation.isRemovedOnCompletion = false
+        rotationAnimation.toValue = 0
+        
+        CATransaction.setCompletionBlock {
+            snapshot.transform = .identity
+            snapshot.removeFromSuperview()
+            snapshot.isHidden = true
+            card.view.isHidden = false
+        }
+        
+        snapshot.layer.add(translationAnimation, forKey: "translation")
+        snapshot.layer.add(rotationAnimation, forKey: "rotation")
+        
+        CATransaction.commit()
     }
     
 }

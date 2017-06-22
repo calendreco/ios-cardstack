@@ -1,15 +1,18 @@
 PODS:
   - AWPercentDrivenInteractiveTransition (0.2.0)
+  - pop (1.0.9)
   - Reveal-SDK (8)
 
 DEPENDENCIES:
   - AWPercentDrivenInteractiveTransition
+  - pop (~> 1.0)
   - Reveal-SDK
 
 SPEC CHECKSUMS:
   AWPercentDrivenInteractiveTransition: 26f1c1f11777e2f6171819a13b458dda021db3ad
+  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
   Reveal-SDK: 43be4e662864e937960d0d04d005135e29c4e53b
 
-PODFILE CHECKSUM: 9b3737be14e59639ecccff6248d1aa16bf4fec1c
+PODFILE CHECKSUM: c9de50bd071253b871385a9ec27096958c5bd5cb
 
 COCOAPODS: 1.2.1

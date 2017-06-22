@@ -175,15 +175,26 @@ class CardViewController: UIViewController {
         container.frame = self.frame(for: state)
         
         var snapshotRect = container.bounds
-        snapshotRect.size.width = container.bounds.width
+        snapshotRect.size.width = view.bounds.width
         snapshotRect.size.height = view.bounds.height - origin(for: .stack)
         
-        guard let snapshot = container.resizableSnapshotView(from: snapshotRect, afterScreenUpdates: true, withCapInsets: .zero) else {
-            print("Unable to snapshot view: \(container)")
+        guard let snapshot = container.snapshot(of: snapshotRect) else {
+            print("Unable to update snapshot")
             return
         }
         
-        self.snapshot = snapshot
+        self.snapshot = UIImageView(image: snapshot)
+
+//        var snapshotRect = container.bounds
+//        snapshotRect.size.width = container.bounds.width
+//        snapshotRect.size.height = view.bounds.height - origin(for: .stack)
+//
+//        guard let snapshot = container.resizableSnapshotView(from: snapshotRect, afterScreenUpdates: true, withCapInsets: .zero) else {
+//            print("Unable to snapshot view: \(container)")
+//            return
+//        }
+//
+//        self.snapshot = snapshot
     }
     
     func resetSnapshot() {

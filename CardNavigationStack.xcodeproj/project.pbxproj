@@ -25,6 +25,7 @@
 		DC93791B1EF1CBF700A42E83 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC93791A1EF1CBF700A42E83 /* RootViewController.swift */; };
 		DCD333C71EEEEE010059EE99 /* UIPanGestureRecognizer+Direction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD333C61EEEEE010059EE99 /* UIPanGestureRecognizer+Direction.swift */; };
 		DCD333C91EEF19190059EE99 /* Transition.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD333C81EEF19190059EE99 /* Transition.swift */; };
+		DCE7AB2E1EFC1F46001304D0 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCE7AB2D1EFC1F46001304D0 /* HistoryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		DC93791A1EF1CBF700A42E83 /* RootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootViewController.swift; sourceTree = "<group>"; };
 		DCD333C61EEEEE010059EE99 /* UIPanGestureRecognizer+Direction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIPanGestureRecognizer+Direction.swift"; sourceTree = "<group>"; };
 		DCD333C81EEF19190059EE99 /* Transition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Transition.swift; path = "../../live-ios-2/src/live/src/Transition.swift"; sourceTree = "<group>"; };
+		DCE7AB2D1EFC1F46001304D0 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				DC535F811EF3176F00355AE8 /* CardGroup.swift */,
 				DC70BCE11EF457A5007740A5 /* CardStackViewController.swift */,
 				DC93791A1EF1CBF700A42E83 /* RootViewController.swift */,
+				DCE7AB2D1EFC1F46001304D0 /* HistoryViewController.swift */,
 				DCD333C81EEF19190059EE99 /* Transition.swift */,
 				DC1A55A51EF9D15300C2673F /* PercentDrivenTransition.swift */,
 				DC1A55A31EF9D14300C2673F /* TransitionContext.swift */,
@@ -262,6 +265,7 @@
 				DC1A55A41EF9D14300C2673F /* TransitionContext.swift in Sources */,
 				DC0C85F91ECF987300289F3D /* VenueViewController.swift in Sources */,
 				DC41920D1EF2DEE9005FD50A /* CardGroupStore.swift in Sources */,
+				DCE7AB2E1EFC1F46001304D0 /* HistoryViewController.swift in Sources */,
 				DC93791B1EF1CBF700A42E83 /* RootViewController.swift in Sources */,
 				DC0C85F51ECF975E00289F3D /* UIView+Snapshot.swift in Sources */,
 				DC535F821EF3176F00355AE8 /* CardGroup.swift in Sources */,

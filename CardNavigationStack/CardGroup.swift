@@ -9,6 +9,14 @@
 import Foundation
 import UIKit
 
+class HistoryCardGroupStore: CardGroupStore {
+    override func load(withCompletion completion: (([UIColor]) -> Void)?) {
+        completion?([])
+        hasLoadedAllCards = true
+        isLoading = false
+    }
+}
+
 class CardGroup {
     
     var currentCard: CardViewController {
@@ -81,8 +89,14 @@ class CardGroup {
     }
     
     func fetchNext() {
-        store.load { [weak self] cards in
+        store.load { [weak self] colors in
             guard let `self` = self else { return }
+            
+            let cards = colors.map({ (color) -> CardViewController in
+                let card = VenueView(background: color)
+                return CardViewController(child: card, state: .stack)
+            })
+            
             self.cards.append(contentsOf: cards.reversed())
         }
     }
