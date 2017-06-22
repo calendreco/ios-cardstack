@@ -19,7 +19,6 @@ class CardGroupStore {
     var loadCounter: Int = 2
     
     func load(withCompletion completion: (([UIColor]) -> Void)?) {
-        print("Loading more cards...")
         
         isLoading = true
         
@@ -35,8 +34,6 @@ class CardGroupStore {
             self?.didFinishLoading?()
             self?.loadCounter -= 1
             self?.hasLoadedAllCards = (self?.loadCounter == 0)
-            
-            print("Finished loading \(colors.count) more cards!")
         }
     }
 }

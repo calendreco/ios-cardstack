@@ -16,57 +16,6 @@ protocol CardChildScrollDelegate: class {
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>)
 }
 
-class MockCardChild: UIView, CardChild {
-    var scrollView: UIScrollView {
-        return _scrollView
-    }
-    
-    let _scrollView = UIScrollView(frame: .zero)
-    let container: UIView
-    
-    var updateSnapshot: (() -> Void)?
-    var scrollDelegate: CardChildScrollDelegate?
-    
-    
-    init(view: UIView) {
-        container = view
-        
-        super.init(frame: view.frame)
-        
-        _scrollView.addSubview(view)
-        _scrollView.delegate = self
-        _scrollView.alwaysBounceVertical = true
-        
-        addSubview(_scrollView)
-
-        updateSnapshot?()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        _scrollView.frame = bounds
-        container.frame = _scrollView.bounds
-    }
-}
-
-extension MockCardChild: UIScrollViewDelegate {
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        scrollDelegate?.scrollViewWillBeginDragging(scrollView)
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        scrollDelegate?.scrollViewDidScroll(scrollView)
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        scrollDelegate?.scrollViewWillEndDragging(scrollView, withVelocity: velocity, targetContentOffset: targetContentOffset)
-    }
-}
-
 class CardViewController: UIViewController {
 
     enum State {
@@ -175,31 +124,21 @@ class CardViewController: UIViewController {
         container.frame = self.frame(for: state)
         
         var snapshotRect = container.bounds
-        snapshotRect.size.width = view.bounds.width
+        snapshotRect.size.width = container.bounds.width
         snapshotRect.size.height = view.bounds.height - origin(for: .stack)
         
-        guard let snapshot = container.snapshot(of: snapshotRect) else {
-            print("Unable to update snapshot")
+        guard let snapshot = container.resizableSnapshotView(from: snapshotRect, afterScreenUpdates: true, withCapInsets: .zero) else {
+            print("Unable to snapshot view: \(container)")
             return
         }
         
-        self.snapshot = UIImageView(image: snapshot)
-
-//        var snapshotRect = container.bounds
-//        snapshotRect.size.width = container.bounds.width
-//        snapshotRect.size.height = view.bounds.height - origin(for: .stack)
-//
-//        guard let snapshot = container.resizableSnapshotView(from: snapshotRect, afterScreenUpdates: true, withCapInsets: .zero) else {
-//            print("Unable to snapshot view: \(container)")
-//            return
-//        }
-//
-//        self.snapshot = snapshot
+        self.snapshot = snapshot
     }
     
     func resetSnapshot() {
         snapshot?.removeFromSuperview()
         snapshot = nil
+        // TODO: Maybe we should just reset animatable properties here instead of deleting it completely
     }
     
 }

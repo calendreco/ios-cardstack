@@ -75,7 +75,7 @@ class RootViewController: UIViewController {
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         
         let loadingView = LoadingCard(frame: CGRect(x: 0, y: 0, width: 375, height: 670))
-        let loadingViewContainer = MockCardChild(view: loadingView)
+        let loadingViewContainer = CardChildContainer(view: loadingView)
         let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
         
         let store = CardGroupStore()
@@ -85,11 +85,6 @@ class RootViewController: UIViewController {
         
         stack = CardStackViewController(group: group)
         
-//        let loadingView2 = LoadingCard(frame: CGRect(x: 0, y: 0, width: 375, height: 670))
-//        let loadingViewContainer2 = MockCardChild(view: loadingView)
-//        let loadingCard2 = CardViewController(child: loadingViewContainer, state: .stack)
-//        historyGroup = CardGroup(loadingCard: loadingCard2, store: HistoryCardGroupStore(), title: nil)
-//
         super.init(nibName: nil, bundle: nil)
         
         addChildViewController(stack)
@@ -148,7 +143,7 @@ class RootViewController: UIViewController {
     @objc private func handleAddButton() {
         
         let loadingView = LoadingCard(frame: view.bounds)
-        let loadingViewContainer = MockCardChild(view: loadingView)
+        let loadingViewContainer = CardChildContainer(view: loadingView)
         let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
         
         let store = CardGroupStore()
@@ -181,12 +176,8 @@ extension RootViewController: CardStackViewDelegate {
                 anim.fromValue = CGSize(width: 1, height: 1)
                 anim.toValue = CGSize(width: 1.45, height: 1.45)//historyButton.bounds.size.applying(CGAffineTransform.init(scaleX: 1.25, y: 1.25))
                 anim.autoreverses = true
-//                anim.duration = 0.25
-//                anim.springBounciness = 10
-//                anim.velocity = 10//CGPoint(x: 0, y: 100)
                 
-                historyButton.layer.pop_add(anim, forKey: "popButton")
-                
+                historyButton.layer.pop_add(anim, forKey: "popButton")                
             }
         }
     }
@@ -205,7 +196,7 @@ extension RootViewController: HistoryViewDelegate {
             card.updateSnapshot()
 
             let loadingView = LoadingCard(frame: self.view.bounds)
-            let loadingViewContainer = MockCardChild(view: loadingView)
+            let loadingViewContainer = CardChildContainer(view: loadingView)
             let loadingCard = CardViewController(child: loadingViewContainer, state: .stack)
             
             let store = HistoryCardGroupStore()
